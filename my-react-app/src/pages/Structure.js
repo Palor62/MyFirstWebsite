@@ -1,6 +1,42 @@
 import { Outlet, Link } from "react-router-dom";
-import portrait from "./img/portrait.jpg"
+//import portrait from "./img/portrait.jpg"
 
+const Structure = () => {
+  return (
+     <>
+      <nav style={{backgroundColor: 'lightblue', flexDirection: "column", float: 'left', marginRight: '20px'}}>
+      <ul>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/">Home</Link></button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/skills">Skills</Link></button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/Completed">Completed</Link></button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>Space</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/mui">Mui</Link></button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/re">Re</Link></button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/reactvis">ReactVis</Link></button>
+          </li>
+      </ul> 
+      </nav>
+      <Outlet />
+    </> 
+  )
+};
+
+export default Structure;
+
+/*
 const Structure = () => {
   return (
      <>
@@ -19,6 +55,12 @@ const Structure = () => {
           <li>
             <button style={{margin: '10px'}}><Link to="/Completed">Completed</Link></button>
           </li>
+          <li>
+            <button style={{margin: '10px'}}>Space</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/mui">Mui</Link></button>
+          </li>
       </ul> 
       <hr style={{margin: '10px'}}></hr>
       <p style={{textAlign: 'center'}}><a href="https://github.com/martinloevborg">Github</a></p>
@@ -29,5 +71,4 @@ const Structure = () => {
     </> 
   )
 };
-
-export default Structure;
+*/
