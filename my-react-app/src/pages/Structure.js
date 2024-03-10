@@ -27,6 +27,9 @@ const Structure = () => {
           <li>
             <button style={{margin: '10px'}}><Link to="/reactvis">ReactVis</Link></button>
           </li>
+          <li>
+            <button style={{margin: '10px'}}><Link to="/plotlyani">PlotlyAni</Link></button>
+          </li>
       </ul> 
       </nav>
       <Outlet />

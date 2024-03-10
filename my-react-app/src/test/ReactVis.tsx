@@ -40,7 +40,7 @@ const ReactVis = () => {
                 data={[
                   {
                     values: [30, 50],
-                    hole: .4,
+                    hole: .6,
                     type: 'pie',
                   },
                 ]}
