@@ -16,7 +16,7 @@ const Structure = () => {
             <button style={{margin: '10px'}}><Link to="/Completed">Completed</Link></button>
           </li>
           <li>
-            <button style={{margin: '10px'}}>Space</button>
+            <button style={{margin: '10px'}}><Link to="/space">Space</Link></button>
           </li>
           <li>
             <button style={{margin: '10px'}}><Link to="/mui">Mui</Link></button>

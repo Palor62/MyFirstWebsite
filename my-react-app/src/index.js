@@ -8,7 +8,8 @@ import Error from "./pages/Error";
 import Mui from "./test/Mui.tsx"
 import Re from "./test/Re.tsx"
 import ReactVis from './test/ReactVis.tsx';
-import PlotlyAni from './test/PlotlyAni.tsx'
+import PlotlyAni from './test/PlotlyAni.tsx';
+import Space from './test/Space.tsx';
 
 export default function App(){
   return (
@@ -23,6 +24,7 @@ export default function App(){
           <Route path="re" element={<Re />}/>
           <Route path="reactvis" element={<ReactVis />}/>
           <Route path="plotlyani" element={<PlotlyAni />}/>
+          <Route path="space" element={<Space />}/>
         </Route>
       </Routes>
     </BrowserRouter>

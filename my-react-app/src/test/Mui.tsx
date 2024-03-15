@@ -34,7 +34,10 @@ height={300}
 */
 
 import React, { useEffect, useState } from "react";
-import Plot from "react-plotly.js";
+import Plotly from "react-plotly.js";
+import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import Plot from "./Plot.tsx";
+import Collapsible from "react-collapsible";
 
 export default function Mui() {
   const [chart, setChart] = useState({
@@ -102,14 +105,55 @@ export default function Mui() {
 
   return (
     <div>
-      <Plot
-        data={chartData.data}
-        layout={chartData.layout}
-      />
-      <Plot
-        data={chart.data}
-        layout={chart.layout}
-      />
+      <div style={{ flexDirection: "row" }}>
+        <div style={{ flexDirection: "column" }}>
+          <div style={{ display: "flex"}}>
+            <Plotly
+              data={chartData.data}
+              layout={chartData.layout}
+            />
+            <Plotly
+              data={chart.data}
+              layout={chart.layout}
+            />
+          </div>
+          <div style={{ display: "flex"}}>
+            <Sidebar>
+              <Menu
+                menuItemStyles={{
+                  button: {
+                    // the active class will be added automatically by react router
+                    // so we can use it to style the active menu item
+                    [`&.active`]: {
+                      backgroundColor: "#13395e",
+                      color: "#b6c8d9",
+                    },
+                  },
+                }}
+              >
+                <SubMenu label="Charts">
+                  <MenuItem>Pie charts</MenuItem>
+                  <MenuItem> Line charts </MenuItem>
+                  <Plot />
+                </SubMenu>
+                <MenuItem> Documentation </MenuItem>
+                <MenuItem> Calendar </MenuItem>
+              </Menu>
+            </Sidebar>
+            <Collapsible trigger="Start here">
+              <p>
+                This is the collapsible content. It can be any element or React
+                component you like.
+              </p>
+              <p>
+                It can even be another Collapsible component. Check out the next
+                section!
+              </p>
+              <Plot />
+            </Collapsible>
+          </div>
+        </div>      
+      </div>      
     </div>
   );
 }
