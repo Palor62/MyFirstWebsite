@@ -36,7 +36,7 @@ height={300}
 import React, { useEffect, useState } from "react";
 import Plotly from "react-plotly.js";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import Plot from "./Plot.tsx";
+import Plot from "./extra/Plot.tsx";
 import Collapsible from "react-collapsible";
 
 export default function Mui() {
@@ -118,7 +118,7 @@ export default function Mui() {
             />
           </div>
           <div style={{ display: "flex"}}>
-            <Sidebar>
+            <Sidebar style={{borderColor: "black", width: 1000, backgroundColor: "lightsblue"}}>
               <Menu
                 menuItemStyles={{
                   button: {
@@ -140,7 +140,7 @@ export default function Mui() {
                 <MenuItem> Calendar </MenuItem>
               </Menu>
             </Sidebar>
-            <Collapsible trigger="Start here">
+            <Collapsible trigger="Start here" className="collapsible">
               <p>
                 This is the collapsible content. It can be any element or React
                 component you like.
@@ -157,7 +157,28 @@ export default function Mui() {
     </div>
   );
 }
+/*
+const styles = `
+  .collapsible {
+    background-color: #f5f5f5;
+    color: #333;
+    transition: all 0.3s ease;
+  }
 
+  .collapsible:hover {
+    background-color: #ddd;
+  }
+
+  .collapsible.is-open {
+    background-color: #fff;
+  }
+
+  .collapsible-content {
+    padding: 0.5em;
+    background-color: #fff;
+  }
+`;
+*/
 /*
 import React, { useEffect, useState } from "react";
 import Plot from "react-plotly.js";

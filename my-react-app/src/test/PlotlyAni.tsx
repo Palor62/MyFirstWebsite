@@ -1,6 +1,9 @@
 //import React, { useEffect, useState } from "react";
 import React from "react";
 import Plot from 'react-plotly.js';
+import Chart from "./extra/Chart.tsx";
+//import Graph from "./extra/Graph.tsx"   <Graph />
+import Calendar from 'react-calendar'
 
 const ReactVis = () => {
     return (
@@ -21,8 +24,6 @@ const ReactVis = () => {
                     ]}
                     layout={ {width: 500, height: 400, barmode: 'stack'} }
                 />
-            </div>
-            <div style={{ display: "flex"}}>
                 <Plot
                     data={[
                         {
@@ -35,8 +36,6 @@ const ReactVis = () => {
                     ]}
                     layout={ {width: 500, height: 400, barmode: 'stack'} }
                 />
-            </div>
-            <div style={{ display: "flex"}}>
                 <Plot
                     data={[
                         {
@@ -51,6 +50,13 @@ const ReactVis = () => {
                     ]}
                     layout={ {width: 500, height: 400, barmode: 'group'} }
                 />
+            </div>
+            <div style={{ display: "flex"}}>
+            <Chart />
+            <Calendar />
+            </div>
+            <div style={{ display: "flex"}}>
+           
             </div>
           </div>
         </div>
