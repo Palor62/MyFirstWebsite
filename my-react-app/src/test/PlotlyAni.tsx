@@ -1,8 +1,8 @@
 //import React, { useEffect, useState } from "react";
 import React from "react";
 import Plot from 'react-plotly.js';
-import Chart from "./extra/Chart.tsx";
-//import Graph from "./extra/Graph.tsx"   <Graph />
+//import Chart from "./extra/Chart.tsx";
+import Graph from "./extra/Graph.tsx"   
 import Calendar from 'react-calendar'
 
 const ReactVis = () => {
@@ -52,11 +52,10 @@ const ReactVis = () => {
                 />
             </div>
             <div style={{ display: "flex"}}>
-            <Chart />
             <Calendar />
             </div>
             <div style={{ display: "flex"}}>
-           
+            <Graph />
             </div>
           </div>
         </div>

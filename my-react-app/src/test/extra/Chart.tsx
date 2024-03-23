@@ -1,7 +1,7 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-const CalendarHeatmap: React.FC = () => {
+const Chart: React.FC = () => {
   // Sample data for demonstration
   const data = [
     {
@@ -31,4 +31,4 @@ const CalendarHeatmap: React.FC = () => {
   return <Plot data={data} layout={layout} />;
 };
 
-export default CalendarHeatmap;
+export default Chart;
