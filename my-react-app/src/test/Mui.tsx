@@ -38,6 +38,8 @@ import Plotly from "react-plotly.js";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import Plot from "./extra/Plot.tsx";
 import Collapsible from "react-collapsible";
+import Frontend from "./extra/Connect.tsx";
+//import Tryout from "./extra/Tryout.tsx"; <Tryout/>
 
 export default function Mui() {
   const [chart, setChart] = useState({
@@ -151,6 +153,9 @@ export default function Mui() {
               </p>
               <Plot />
             </Collapsible>
+          </div>
+          <div style={{ display: "flex"}}>
+            <Frontend/>
           </div>
         </div>      
       </div>      

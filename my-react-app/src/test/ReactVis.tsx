@@ -1,5 +1,9 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+import Box from './extra/Box.tsx';
+import Map from './extra/Map.tsx';
+import Sub from './extra/Sub.tsx';
+import Maybe from './extra/Maybe.tsx';
 
 const ReactVis = () => {
     return (
@@ -55,6 +59,14 @@ const ReactVis = () => {
                 ]}
                 layout={ {width: 500, height: 400, title: 'A Fancy Plot'} }
               />
+            </div>
+            <div style={{ display: "flex"}}>
+              <Box/>
+              <Map/>
+              <Sub/>
+            </div>
+            <div style={{ display: "flex"}}>
+              <Maybe/>
             </div>
           </div>
         </div>

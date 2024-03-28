@@ -1,0 +1,362 @@
+testServer.js in airplateserver repo
+------------------------------------
+/*
+const http = require('http');
+const express = require('express');
+
+const app = express();
+
+server = http.createServer(app);
+server.listen(80, () => {
+    console.log('Server running on port 80');
+});
+
+app.get('/getData', express.json(), async (req, res) => {
+  try {
+    const queryResult = await influx.query(
+      `SELECT`
+    );
+    res.json(queryResult);
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+});
+*/
+const http = require('http');
+const express = require('express');
+const app = express();
+
+const cors = require("cors");
+app.use(cors());
+app.use(express.json());
+
+server = http.createServer(app);
+app.listen(8000, () => {
+  console.log(`Server is running on port 8000`);
+});
+
+app.use((req, res, next) => {
+  console.log('Time: ', Date.now());
+  next();
+});
+
+app.get('/', async (req, res) => {
+  try{
+    res.status(200); 
+    res.send('Welcome to my server!');
+    const money = 180;
+    const message = money >= 100 ? "You have more than 100 money" : "You have less than 100 money";
+    console.log(message);
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+    console.log(`Error`);
+  }
+});
+
+app.get('/u', (req, res)=>{ 
+  res.set('Content-Type', 'text/html'); 
+  res.status(200).send("<h1>U route path</h1>"); 
+});
+
+app.get("/message", (req, res) => {
+  res.json({ message: "Hello from server!" });
+});
+
+app.post("/message", express.urlencoded({ extended: false }), (req, res) => {
+  console.log(req.body)
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Use the data in the plots
+---------------------------------------------------
+/*V1
+import React, { useEffect, useState } from "react";
+
+function Date() {
+  const [data, setData] = useState("");
+  useEffect(() => {
+    fetch("/dashData")
+    .then((res) => res.json())
+    .then((msg) => setData(msg.data));
+  }, []);
+
+    return (
+      <div style={{width: 1800}}>
+        <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column"}}>
+            <h1>Calendar</h1>
+            <h1>Heatmap</h1>
+            <h1>{data}</h1>
+          </div>
+        </div>
+      </div>
+    );
+}  
+
+export default Date;
+*/
+//------------------
+/*V2
+import { fetchDashData } from '../APIClient';
+import Plot from 'react-plotly.js';
+import React, { useEffect, useState } from "react";
+
+function Date() {
+  const [data, setData] = useState([])
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+   const fetchData = async () => {
+		    try {
+		      const response = await fetch('/dashData');
+		      const jsonData = await response.json();
+		      setData(jsonData);
+		    } catch (error) {
+		      console.error('Error fetching data:', error);
+		    }
+		  };
+
+
+    return (
+      <div style={{width: 1800}}>
+        <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column"}}>
+            <h1>Calendar</h1>
+            <h1>Heatmap</h1>
+            <Plot
+		        data={[
+		          {
+		            x: data.map(item => item.x), 
+		            y: data.map(item => item.y),
+		            type: 'scatter', 
+		          }
+		        ]}
+		        layout={{ title: 'Data from Database' }}
+		      />
+          </div>
+        </div>
+      </div>
+    );
+}  
+
+export default Date;
+*/
+//------------------
+/*V3
+import { fetchDashData } from '../APIClient';
+import Plot from 'react-plotly.js';
+import React, { useEffect, useState } from "react";
+
+function Date() {
+  const [data, setData] = useState("")
+  fetchDashData()
+    .then((res) => res.json())
+    .then((msg) => setData(msg.data));
+
+    return (
+      <div style={{width: 1800}}>
+        <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column"}}>
+            <h1>Calendar</h1>
+            <h1>Heatmap</h1>
+            <Plot
+		        data={[
+		          {
+		            x: msg.data.HDOP, 
+		            y: msg.data.VDOP,
+		            type: 'scatter', 
+		          }
+		        ]}
+		        layout={{ title: 'Data from Database' }}
+		      />
+          </div>
+        </div>
+      </div>
+    );
+}  
+
+export default Date;
+*/
+//------------------
+/*V4
+import Plot from 'react-plotly.js';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+function Date() {
+  const [data, setData] = useState("")
+  useEffect(() => {
+		    axios.get("/dashData")
+		      .then(response => {
+		        setGraphData(response.data);
+		      })
+		      .catch(error => {
+		        console.error("Error fetching data:", error);
+		      });
+	}, []);
+
+    return (
+      <div style={{width: 1800}}>
+        <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column"}}>
+            <h1>Calendar</h1>
+            <h1>Heatmap</h1>
+            <Plotly
+              data={[
+                {
+                  type: "scatter",
+                  x: graphData.map(entry => entry.timestamp),
+                  y: graphData.map(entry => entry.value),
+                  mode: "lines+markers",
+                  marker: { color: "blue" },
+                  name: "Data Series"
+                }
+              ]}
+              layout={{ title: "Graph Title" }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+}  
+
+export default Date;
+*/
+//------------------
+/*V5
+import Plot from 'react-plotly.js';
+import React, { useEffect, useState } from "react";
+
+function Date() {
+  const [data, setData] = useState("");
+    useEffect(() => {
+      fetch("/dashData")
+      .then((res) => res.json())
+      .then((msg) => setData(msg.data));
+    }, []);
+
+    constructor(props){
+        super(props)
+
+        var trace1 = {
+            x: {data.HDOP},
+            y: {data.VDOP},
+            name: 'Gold',
+            type: 'bar',
+        };
+
+        var data = [trace1];
+
+        var layout = {
+            scattermode: 'group',
+        };
+        this.state = {data: data,layout: layout}
+      }
+
+    return (
+      <div style={{width: 1800}}>
+        <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column"}}>
+            <h1>Calendar</h1>
+            <h1>Heatmap</h1>
+            <Plotly
+              data={this.state.data} layout={this.state.layout}
+            />
+          </div>
+        </div>
+      </div>
+    );
+}  
+
+export default Date;
+*/
+//------------------
+/*V6
+import Plot from 'react-plotly.js';
+import { fetchDashData } from '../APIClient';
+
+function Date() {
+  constructor(){
+    super()
+    this.state = {
+      data: []
+    }
+  }
+
+  componentDidMount(){
+    fetchDashData
+  }
+
+  render(){
+    var temp = this.state.data.map((val, i)=>{
+      return val.data.Temperature
+    })
+    var time = this.state.data.map((val, i)=>{
+      return val.stream_created_at.split('T')[0] + ' ' + val.stream_created_at.split('T')[1] 
+    })
+
+
+    return (
+      <div style={{width: 1800}}>
+        <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column"}}>
+            <h1>Calendar</h1>
+            <h1>Heatmap</h1>
+            {
+            this.state.data
+            ?
+            <Plot
+              data={[
+                {
+                  x: time ? time : 0,
+                  y: temp ? temp : 0,
+                  type: 'scattergl',
+                  marker: {color:'red'},
+                  name: 'Temp (°C)'
+                },
+              ]}
+              layout = {{
+                width : '700', height : '400',
+                title : 'Favoriot Data Visualization',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+    }  
+}  
+
+export default Date;
+*/
