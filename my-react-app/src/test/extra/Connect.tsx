@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+/*
 function Frontend() {
   const [message, setMessage] = useState("");
   const formInfo = {
@@ -20,4 +20,4 @@ function Frontend() {
   );
 }
 
-export default Frontend;
+export default Frontend;*/

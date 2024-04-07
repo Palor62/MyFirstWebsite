@@ -4,6 +4,7 @@ import Plot from 'react-plotly.js';
 //import Chart from "./extra/Chart.tsx";
 import Graph from "./extra/Graph.tsx"   
 import Calendar from 'react-calendar'
+import Comp from "./extra/Comp.tsx";
 
 const ReactVis = () => {
     return (
@@ -56,6 +57,9 @@ const ReactVis = () => {
             </div>
             <div style={{ display: "flex"}}>
             <Graph />
+            </div>
+            <div style={{ display: "flex"}}>
+            <Comp />
             </div>
           </div>
         </div>

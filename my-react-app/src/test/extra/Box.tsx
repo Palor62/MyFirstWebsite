@@ -16,7 +16,7 @@ export default class Box extends Component {
 
         var data_BoxPlot_1 = {
             y: boxPlotly1,
-            type: 'box'
+            type: 'violin'
         }
 
         this.state = {data: [data_BoxPlot_0,data_BoxPlot_1]}
