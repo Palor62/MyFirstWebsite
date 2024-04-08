@@ -1,13 +1,39 @@
-import React, { Component } from 'react'
-import Plot from 'react-plotly.js'
-export default class Comp extends Component {
-    render() {
-        return (
-            <div>
-                <div style={{ flexDirection: "row" }}>
-                    <div style={{ flexDirection: "column" }}>
-                        <div style={{ display: "flex"}}>
-                        <Plot
+import React from "react";
+import Plot from 'react-plotly.js';
+
+export default function Indicators() {
+    return (
+        <div>
+         <div style={{ flexDirection: "row" }}>
+          <div style={{ flexDirection: "column" }}>
+            <div style={{ display: "flex"}}>
+            <Plot
+                data={[
+                  {
+                    type: "indicator",
+                    value: 200,
+                    delta: { reference: 160 },
+                    gauge: { axis: { visible: false, range: [0, 250] } },
+                    domain: { row: 0, column: 0 }
+                  },
+                ]} 
+                layout={ {width: 500, height: 400,
+                  margin: { t: 25, b: 25, l: 25, r: 25 },
+                  grid: { rows: 2, columns: 2, pattern: "independent" },
+                  template: {
+                    data: {
+                      indicator: [
+                        {
+                          title: { text: "Speed" },
+                          mode: "gauge+number+delta",
+                          delta: { reference: 90 }
+                        }
+                      ]
+                    }
+                  }
+                } }   
+              />
+              <Plot
                             data={[
                             {
                                 type: "indicator",
@@ -57,28 +83,9 @@ export default class Comp extends Component {
                             }
                             } }   
                         />
-                        <Plot
-                            data={[
-                                {
-                                    r: [39, 28, 8, 7, 28, 39],
-                                    theta: ['A','B','C', 'D', 'E', 'A'],
-                                    fill: 'toself',
-                                    type: 'scatterpolar',
-                                },
-                            ]}
-                            layout={ {width: 500, height: 400,
-                                polar: {
-                                    radialaxis: {
-                                      visible: true,
-                                      range: [0, 50]
-                                    }
-                                  },
-                            } }
-                        />
-                         </div>
-                    </div>
-                </div>
             </div>
-        )
-    }
+          </div>
+        </div>
+      </div>
+    )
 }

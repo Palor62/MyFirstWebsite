@@ -36,7 +36,7 @@ height={300}
 import React, { useEffect, useState } from "react";
 import Plotly from "react-plotly.js";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import Plot from "./extra/Plot.tsx";
+import Plot from "./components/Plot.tsx";
 import Collapsible from "react-collapsible";
 //import Frontend from "./extra/Connect.tsx"; <Frontend/>
 //import Tryout from "./extra/Tryout.tsx"; <Tryout/>

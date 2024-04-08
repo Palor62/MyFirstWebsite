@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Plot from 'react-plotly.js'
 
-export default class SubPlot extends Component {
+export default class Roundbar extends Component {
 
     constructor(props){
         super(props)

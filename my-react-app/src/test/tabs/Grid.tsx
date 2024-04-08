@@ -1,6 +1,6 @@
 import { Responsive, WidthProvider } from "react-grid-layout";
 import React, { useState } from "react";
-import Plot from "./extra/Plot.tsx";
+import Plot from "../components/Barholder.tsx";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 

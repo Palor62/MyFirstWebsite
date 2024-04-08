@@ -1,0 +1,12 @@
+            const csv = './c3_test_copy.csv'
+            <Plot
+                data={[
+                  {
+                    type: "scatter",
+                    x: [csv],
+                    y: [30, 200, 100, 400, 150, 250],
+                    mode: "lines",
+                  },
+                ]} 
+                layout={{width: 500, height: 400}}   
+              />

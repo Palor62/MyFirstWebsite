@@ -16,19 +16,7 @@ const Structure = () => {
             <button style={{margin: '10px'}}><Link to="/Completed">Completed</Link></button>
           </li>
           <li>
-            <button style={{margin: '10px'}}><Link to="/space">Space</Link></button>
-          </li>
-          <li>
-            <button style={{margin: '10px'}}><Link to="/mui">Mui</Link></button>
-          </li>
-          <li>
-            <button style={{margin: '10px'}}><Link to="/re">Re</Link></button>
-          </li>
-          <li>
-            <button style={{margin: '10px'}}><Link to="/reactvis">ReactVis</Link></button>
-          </li>
-          <li>
-            <button style={{margin: '10px'}}><Link to="/plotlyani">PlotlyAni</Link></button>
+            <button style={{margin: '10px'}}><Link to="/tabsoverview">TabsOverview</Link></button>
           </li>
       </ul> 
       </nav>
