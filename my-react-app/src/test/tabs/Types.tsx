@@ -3,8 +3,13 @@ import Plot from 'react-plotly.js';
 import Indicators from '../components/Indicators.tsx'
 import Geo from '../components/Geo.tsx'
 import Boxviolin from '../components/Boxviolin.tsx';
-import Sub from '../components/Subplots.tsx';
+import Subplots from '../components/Subplots.tsx';
 import Roundbar from '../components/Roundbar.tsx';
+import Calendarheatmap from '../components/Calendarheatmap.tsx';
+import Multigraph from '../components/Multigraph.tsx';
+import Transformgraph from "../components/Transformgraph.tsx";
+import Dropdowns from "../components/Dropdowns.tsx";
+import Calendar from 'react-calendar'
 
 export default function Demo() {
     return (
@@ -76,8 +81,43 @@ export default function Demo() {
             </div>
             <div style={{ display: "flex"}}>
               <Boxviolin/>
-              <Sub/>
+              <Subplots/>
               <Roundbar/>
+            </div>
+            <div style={{ display: "flex"}}>
+              <h1>Calender/Heatmap</h1>
+            </div>
+            <div style={{ display: "flex"}}>
+              <Plot 
+                    data= {[{
+                        z:[[1,null,20,25,1],[45,46,67,13,85],[26,null,90,52,32]],
+                        x: ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+                        y: ['Week1','Week2','Week3'],
+                        type: 'heatmap',
+                    }]}layout={ {width: 500, height: 400, title: 'A Fancy Plot'} }
+                />
+                <Calendarheatmap />
+            </div>
+            <div style={{ display: "flex"}}>
+              <Calendar />
+            </div>
+            <div style={{ display: "flex"}}>
+              <h1>Multiple graphs</h1>
+            </div>
+            <div style={{ display: "flex"}}>
+              <Multigraph/>
+            </div>
+            <div style={{ display: "flex"}}>
+              <h1>Transforming graphs</h1>
+            </div>
+            <div style={{ display: "flex"}}>
+              <Transformgraph/>
+            </div>
+            <div style={{ display: "flex"}}>
+              <h1>Dropdowns</h1>
+            </div>
+            <div style={{ display: "flex"}}>
+              <Dropdowns/>
             </div>
           </div>
         </div>

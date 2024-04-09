@@ -1,11 +1,7 @@
-//import React, { useEffect, useState } from "react";
 import React from "react";
 import Plot from 'react-plotly.js';
-//import Chart from "./extra/Chart.tsx";
-import Graph from "./components/Graph.tsx"   
-import Calendar from 'react-calendar'
 
-const ReactVis = () => {
+const Multigraph = () => {
     return (
       <div>
          <div style={{ flexDirection: "row" }}>
@@ -52,10 +48,8 @@ const ReactVis = () => {
                 />
             </div>
             <div style={{ display: "flex"}}>
-            <Calendar />
             </div>
             <div style={{ display: "flex"}}>
-            <Graph />
             </div>
           </div>
         </div>
@@ -63,36 +57,4 @@ const ReactVis = () => {
     );
   }
 
-export default ReactVis;
-
-//til linje 77: , barcornerradius: 15 - er åbenbart ikke supported
-
-/*
-const MyPlotlyChart = () => {
-    const data = [
-      {
-        x: ['giraffes', 'orangutans', 'monkeys'],
-        y: [20, 14, 23],
-        name: 'SF Zoo',
-        type: 'bar'
-      },
-      {
-        x: ['giraffes', 'orangutans', 'monkeys'],
-        y: [12, 18, 29],
-        name: 'LA Zoo',
-        type: 'bar'
-      }
-    ];
-  
-    const layout = {
-        width: 500,
-        height: 400,
-        barmode: 'group',
-        // Adjust other layout properties as needed
-      };
-  
-    return <Plot data={data} layout={layout} />;
-  };
-
-  <MyPlotlyChart/>
-  */
+export default Multigraph;

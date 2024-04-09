@@ -43,7 +43,7 @@ export default class SubPlot extends Component {
                 rows: 2,
                 columns: 2,
                 subplots: [['xy','x2y'],['xy3','x4y4']],
-                roworder: 'bottom to top' 
+                roworder: 'bottom to top' ,
             }
         };
         this.state = {data: data,layout: layout}

@@ -1,6 +1,4 @@
 import React from 'react';
-//import CalendarHeatmap from 'react-calendar-heatmap';
-//import 'react-calendar-heatmap/dist/styles.css';
 import HeatMap from '@uiw/react-heat-map';
 
 const value = [
@@ -14,7 +12,7 @@ const value = [
     { date: '2016/05/04', count: 11 },
   ];
 
-const Graph = () => {
+const Calendarheatmap = () => {
     return(
         <div>
             <HeatMap
@@ -27,18 +25,4 @@ const Graph = () => {
 };
 
 
-export default Graph;
-
-
-/*
-            <CalendarHeatmap
-                startDate={new Date('2016-01-01')}
-                endDate={new Date('2016-04-01')}
-                values={[
-                    { date: '2016-01-01', count: 12 },
-                    { date: '2016-01-22', count: 122 },
-                    { date: '2016-01-30', count: 38 },
-                    // ...and so on
-                ]}
-            />
-*/
+export default Calendarheatmap;
