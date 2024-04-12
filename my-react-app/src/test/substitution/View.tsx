@@ -57,47 +57,42 @@ import Barholder from '../components/Barholder.tsx'
       
           return (
               <div>
-                  {firstTrace && secondTrace && (
-                      <Plot
-                          data={[firstTrace, secondTrace]}
-                          layout={{ title: 'Drone heights the past 7 days' }}
-                      />
-                  )}
+                <div style={{ flexDirection: "row" }}>
+                  <div style={{ flexDirection: "column" }}>
+                    <div style={{ display: "flex"}}>
+                    <div>
+                        {firstTrace && secondTrace && (
+                            <Plot
+                                data={[firstTrace, secondTrace]}
+                                layout={{ title: 'Drone heights the past 7 days', height: 500 }}
+                            />
+                        )}
+                        {firstTrace && secondTrace && (
+                            <Plot
+                                data={[firstTrace, secondTrace]}
+                                layout={{ title: 'Drone heights the past 7 days', height: 700 }}
+                            />
+                        )}
+                    </div>
+                    <div>
+                        {firstTrace && secondTrace && (
+                            <Plot
+                                    data={[firstTrace, secondTrace]}
+                                    layout={{ title: 'Drone heights the past 7 days', height: 700 }}
+                                />
+                            )}
+                        {firstTrace && secondTrace && (
+                            <Plot
+                                data={[firstTrace, secondTrace]}
+                                layout={{ title: 'Drone heights the past 7 days', height: 500 }}
+                            />
+                        )}
+                    </div>
+                    </div>
+                  </div>
+                </div>
               </div>
           );
       };
       
       export default MyComponent;
-
-
-
-
-
-
-
-
-/*
-//old attempt that worked
-import React, { useEffect, useState } from "react";
-
-function Tryout() {
-  const formInfo = {
-    username: "Bill123",
-    password: "mypassword"
-  }
-
-  useEffect(() => {
-    fetch("http://localhost:8000/message", {
-        method: "POST",
-        headers: {
-            'Content-type': "application/json"
-        },
-        body: JSON.stringify(formInfo)
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  }, []);
-}
-
-export default Tryout;
-*/

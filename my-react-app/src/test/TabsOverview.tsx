@@ -6,6 +6,7 @@ import Demo from "./tabs/Demo.tsx"
 import Types from "./tabs/Types.tsx";
 import Grid from './tabs/Grid.tsx';
 import Replacement from './tabs/Replacement.tsx';
+import Testsite from './tabs/Testsite.tsx'
 
 export default function TabsOverview() {
     return (
@@ -15,10 +16,9 @@ export default function TabsOverview() {
               <TabList>
                 <Tab>Demo</Tab>
                 <Tab>Types</Tab>
-                <Tab>Special</Tab>
-                <Tab>Non</Tab>
                 <Tab>Grid</Tab>
-                <Tab>Test</Tab>
+                <Tab>Replacement</Tab>
+                <Tab>Testsite</Tab>
               </TabList>
               <TabPanel>
                 <Demo />
@@ -27,16 +27,24 @@ export default function TabsOverview() {
                 <Types />
               </TabPanel>
               <TabPanel style={{width: 1800}}>
-              <h1>Drone Fleet Management Dashboard</h1>
-              </TabPanel>
-              <TabPanel>
-              
-              </TabPanel>
-              <TabPanel style={{width: 1800}}>
                 <Grid />
               </TabPanel>
               <TabPanel>
-                <Replacement/>
+                <div style={{ flexDirection: "row" }}>
+                  <div style={{ flexDirection: "column" }}>
+                    <div style={{ display: "flex"}}>
+                      <Replacement/>
+                      <Replacement/>
+                    </div>
+                    <div style={{ display: "flex"}}>
+                      <Replacement/>
+                      <Replacement/>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+              <TabPanel>
+                <Testsite/>
               </TabPanel>
             </Tabs>
         </div>
