@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
+import Testfile from "./Testfile.tsx"
 
-const firstchoice = false;
+const firstchoice = true;
 
 export default function Dato() {
     const [data, setData] = useState<any[]>([]);
@@ -50,6 +51,8 @@ export default function Dato() {
                     {
                         firstchoice
                         ?
+                        <div>
+                        <h1>First choice</h1>
                         <Plot
                             data={[
                             {
@@ -59,9 +62,13 @@ export default function Dato() {
                             ]}
                             layout={ {width: 500, height: 400, title: 'A Fancy Plot'} }
                         />
+                        </div>
                         :
-                        <h1>second choise</h1>
+                        <h1>second choice</h1>
                     }
+                </div>
+                <div style={{ display: "flex"}}>
+                    <Testfile/>
                 </div>
             </div>
         </div>
