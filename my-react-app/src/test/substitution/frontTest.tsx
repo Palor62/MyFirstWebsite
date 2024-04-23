@@ -1,4 +1,4 @@
-/*
+
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 import Barholder from '../components/Barholder.tsx'
@@ -61,7 +61,6 @@ import Barholder from '../components/Barholder.tsx'
       };
       
       export default MyComponent;
-*/
 
 
 
@@ -73,6 +72,7 @@ import Barholder from '../components/Barholder.tsx'
 
 
 
+/*
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 
@@ -120,12 +120,12 @@ const App: React.FC = () => {
 
     return (
         <div>
-            {/* Dropdown to select the time range */}
+            
             <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
             >
-                {/* Render an option for each time range */}
+
                 {timeRanges.map((range) => (
                     <option key={range} value={range}>
                         {range}
@@ -133,10 +133,10 @@ const App: React.FC = () => {
                 ))}
             </select>
 
-            {/* Display an error message if fetching data fails */}
+
             {error && <div>Error fetching data: {error}</div>}
 
-            {/* Render the Plotly chart if the trace data is available */}
+            
             {firstTrace && (
                 <Plot
                     data={[firstTrace]}
@@ -147,4 +147,4 @@ const App: React.FC = () => {
     );
 };
 
-export default App;
+export default App;*/
