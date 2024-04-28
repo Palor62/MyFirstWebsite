@@ -18,6 +18,57 @@ const Structure = () => {
           <li>
             <button style={{margin: '10px'}}><Link to="/tabsoverview">TabsOverview</Link></button>
           </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
+          <li>
+            <button style={{margin: '10px'}}>button</button>
+          </li>
       </ul> 
       </nav>
       <Outlet />

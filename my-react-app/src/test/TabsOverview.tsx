@@ -6,7 +6,8 @@ import Demo from "./tabs/Demo.tsx"
 import Types from "./tabs/Types.tsx";
 import Grid from './tabs/Grid.tsx';
 import Replacement from './tabs/Replacement.tsx';
-import Testsite from './tabs/Testsite.tsx'
+import Testsite from './tabs/Testsite.tsx';
+import Prototype from './demostration/Prototype.tsx'
 
 export default function TabsOverview() {
     return (
@@ -19,6 +20,7 @@ export default function TabsOverview() {
                 <Tab>Grid</Tab>
                 <Tab>Replacement</Tab>
                 <Tab>Testsite</Tab>
+                <Tab>Prototype</Tab>
               </TabList>
               <TabPanel>
                 <Demo />
@@ -45,6 +47,9 @@ export default function TabsOverview() {
               </TabPanel>
               <TabPanel>
                 <Testsite/>
+              </TabPanel>
+              <TabPanel>
+                <Prototype/>
               </TabPanel>
             </Tabs>
         </div>

@@ -1,4 +1,4 @@
-
+/*
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 import Barholder from '../components/Barholder.tsx'
@@ -61,7 +61,7 @@ import Barholder from '../components/Barholder.tsx'
       };
       
       export default MyComponent;
-
+*/
 
 
 
@@ -85,9 +85,10 @@ const App: React.FC = () => {
         const fetchData = async () => {
             try {
                 // Fetch data from the backend server
-                //const response = await fetch(`http://localhost:80/test?timeRange=${timeRange}`);
+                const response = await fetch(`http://localhost:80/test?timeRange=${timeRange}`);
                 //const response = await fetch(`http://localhost:80/test?timeRange=6h`);
-                const response = await fetch(`http://localhost:80/test`);
+                
+                //const response = await fetch(`http://localhost:80/test`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
@@ -148,3 +149,110 @@ const App: React.FC = () => {
 };
 
 export default App;*/
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import Plot from 'react-plotly.js';
+
+const App: React.FC = () => {
+    const [timeRange, setTimeRange] = useState('1h');
+    const [measurements, setMeasurements] = useState<string[]>([]);
+    const [data, setData] = useState<any[]>([]);
+
+    const availableMeasurements = ['measurement1', 'measurement2', 'measurement3']; // Replace with actual measurements
+
+    const fetchData = async () => {
+        try {
+            // Join the selected measurements with commas and include them in the request
+            const measurementsParam = measurements.join(',');
+
+            const response = await fetch(`http://localhost/testid?timeRange=${timeRange}&measurements=${measurementsParam}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const fetchedData = await response.json();
+
+            // Create the trace for Plotly
+            const trace = {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Altitude',
+                x: fetchedData.map((item: any) => item._time),
+                y: fetchedData.map((item: any) => item._value),
+                line: { color: 'red' }
+            };
+            
+            setData([trace]);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        // Fetch data when the time range or measurements change
+        fetchData();
+    }, [timeRange, measurements]);
+
+    // Function to handle checkbox change
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = e.target;
+
+        setMeasurements((prevMeasurements) => {
+            if (checked) {
+                // Add the measurement to the list
+                return [...prevMeasurements, value];
+            } else {
+                // Remove the measurement from the list
+                return prevMeasurements.filter((measurement) => measurement !== value);
+            }
+        });
+    };
+
+    return (
+        <div>
+            {/* Dropdown to select the time range */}
+            <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+            >
+                <option value="1h">1 hour</option>
+                <option value="6h">6 hours</option>
+                <option value="12h">12 hours</option>
+                <option value="24h">24 hours</option>
+            </select>
+
+            {/* Checkboxes to select measurements */}
+            <div>
+                {availableMeasurements.map((measurement) => (
+                    <div key={measurement}>
+                        <input
+                            type="checkbox"
+                            id={measurement}
+                            value={measurement}
+                            onChange={handleCheckboxChange}
+                        />
+                        <label htmlFor={measurement}>{measurement}</label>
+                    </div>
+                ))}
+            </div>
+
+            {/* Render the Plotly chart if data is available */}
+            {data.length > 0 && (
+                <Plot
+                    data={data}
+                    layout={{ title: 'Altitude over Time' }}
+                />
+            )}
+        </div>
+    );
+};
+
+export default App;
