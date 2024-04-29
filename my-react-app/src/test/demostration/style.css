@@ -10,7 +10,16 @@
     display: flex;
 }
 
-/*Card*/
+/*Card
+                        <div className="cardbox">
+                            <div className="number">Drones</div>
+                            <div className="number">40</div>
+                        </div>
+                        <div className="cardbox">
+                            <div className="number">Drones</div>
+                            <div className="number">40</div>
+                        </div>
+*/
 .cardbox {
     width: 150px;
     height: 120px;
@@ -22,6 +31,7 @@
     margin: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-shadow: 0 6px 7px -3px rgba(0, 0, 0, 0.35);
   }
   
   .text-content {
@@ -61,7 +71,7 @@
     border-radius: 5px;
   }
 
-/*Circle*/
+/*Circle
 .circle {
     width: 120px;
     height: 120px;
@@ -85,3 +95,26 @@
   .label {
     font-size: 16px;
   }
+  
+  //Circle
+  interface CircleProps {
+    value: number;
+    label: string;
+  }
+  
+  const Circle: React.FC<CircleProps> = ({ value, label }) => {
+    return (
+      <div className="circle">
+        <div className="circle-content">
+          <div className="value">{value}</div>
+          <div className="label">{label}</div>
+        </div>
+      </div>
+    );
+  };
+
+                        <Circle value={40} label="Drones" />
+                        <Circle value={64} label="Batteries" />
+                        <Circle value={36} label="Equipment" />
+                        <Circle value={37} label="Locations" />
+  */
