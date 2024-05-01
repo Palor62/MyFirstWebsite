@@ -37,38 +37,84 @@ export default function Dato() {
         fetchDat();
     }, []);
 
+    const values = [
+        ['Salaries', 'Office', 'Merchandise', 'Legal', '<b>TOTAL</b>'],
+        [1200000, 20000, 80000, 2000, 12120000],
+        [1300000, 20000, 70000, 2000, 130902000],
+        [1300000, 20000, 120000, 2000, 131222000],
+        [1400000, 20000, 90000, 2000, 14102000]
+    ];
+
+    // Define the data array as an array of objects representing the plot data
+    const table = [{
+        type: 'table',
+        header: {
+            values: [["<b>EXPENSES</b>"], ["<b>Q1</b>"],
+            ["<b>Q2</b>"], ["<b>Q3</b>"], ["<b>Q4</b>"]],
+            align: "center",
+            line: { width: 1, color: 'black' },
+            fill: { color: "grey" },
+            font: { family: "Arial", size: 12, color: "white" }
+        },
+        cells: {
+            values: values,
+            align: "center",
+            line: { color: "black", width: 1 },
+            font: { family: "Arial", size: 11, color: ["black"] }
+        }
+    }];
 
     return (
         <div style={{ flexDirection: "row" }}>
             <div style={{ flexDirection: "column" }}>
-                <div style={{ display: "flex"}}>
-                <Plot
-                    data={[{ x: data.x, y: data.y, type: 'scatter' }]}
-                    layout={{ title: 'Plotting CSV data from AJAX call' }}
-                />
+                <div style={{ display: "flex" }}>
+                    <Plot
+                        data={[{ x: data.x, y: data.y, type: 'scatter' }]}
+                        layout={{ title: 'Plotting CSV data from AJAX call' }}
+                    />
                 </div>
-                <div style={{ display: "flex"}}>
+                <div style={{ display: "flex" }}>
                     {
                         firstchoice
-                        ?
-                        <div>
-                        <h1>First choice</h1>
-                        <Plot
-                            data={[
-                            {
-                                values: [30, 120],
-                                type: 'pie',
-                            },
-                            ]}
-                            layout={ {width: 500, height: 400, title: 'A Fancy Plot'} }
-                        />
-                        </div>
-                        :
-                        <h1>second choice</h1>
+                            ?
+                            <div>
+                                <h1>First choice</h1>
+                                <Plot
+                                    data={[
+                                        {
+                                            values: [30, 120],
+                                            type: 'pie',
+                                        },
+                                    ]}
+                                    layout={{ width: 500, height: 400, title: 'A Fancy Plot' }}
+                                />
+                            </div>
+                            :
+                            <h1>second choice</h1>
                     }
                 </div>
-                <div style={{ display: "flex"}}>
-                    <Testfile/>
+                <div style={{ display: "flex" }}>
+                    <Testfile />
+                </div>
+                <div style={{ display: "flex" }}>
+                    <Plot
+                        data={data}
+                        layout={{ width: 800, height: 400, title: 'Expenses Table' }} // Optional: set the layout
+                        style={{ width: '100%', height: '400px' }}
+                        useResizeHandler={true}
+                    />
+                    <Plot
+                        data={[
+                            {
+                                x: ["1", "2", "3","4"],
+                                y: [60,80,-40,-20],
+                                name: "2018",
+                                type: "waterfall",
+                                orientation: "v",
+                            },
+                        ]}
+                        layout={{title: 'water fall' }}
+                    />
                 </div>
             </div>
         </div>
