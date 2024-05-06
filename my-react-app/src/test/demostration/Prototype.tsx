@@ -13,14 +13,16 @@ export default function Demo() {
     const allRows = csvData.split("\n").map((row) => row.split(","));
     const x = [];
     const y = [];
+    const z = [];
 
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
       x.push(row[0]);
       y.push(row[1]);
+      z.push(row[2]);
     }
 
-    setData({ x, y });
+    setData({ x, y, z});
   };
 
   useEffect(() => {
@@ -127,7 +129,7 @@ export default function Demo() {
               <div className="box3">
                 <Plot
                   data={[
-                    { x: data.x, y: data.y, type: "scatter", fill: "tozeroy" },
+                    { x: data.x, y: data.z, type: "scatter", fill: "tozeroy" },
                   ]}
                   layout={{ title: "Altitude through time" }}
                 />
