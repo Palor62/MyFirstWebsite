@@ -4,7 +4,7 @@ import "./style.css";
 import logo from "./img/dashboard.png";
 import Barholder from "../components/Barholder.tsx";
 
-const bool = true;
+const bool = true; //airborne, disconnections, messagecounter, speed, temp, bat - rsrp, rsrq,,,rssi: -61, -63, -57, -59, -61, -61, -57, -59, -55, -61, -59, -53, -61, -55, -53, -59
 
 export default function Demo() {
   //Csv
@@ -15,6 +15,10 @@ export default function Demo() {
     const alt = [];
     const agl = [];
     const vdop = [];
+    const hdop = [];
+    const snr = [];
+    const lat = [];
+    const long = [];
 
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
@@ -135,8 +139,10 @@ export default function Demo() {
                       x: data.time,
                       y: data.alt,
                       type: "scatter",
-                      fill: "tozeroy",
+                      marker: {color: 'orange'},
+                      name: "line"
                     },
+                    {type: 'bar', x: data.time, y: data.alt, marker: {color: 'blue'}, name: "bar"}
                   ]}
                   layout={{ title: "Altitude through time" }}
                 />
@@ -146,7 +152,8 @@ export default function Demo() {
                       x: data.time,
                       y: data.agl,
                       type: "scatter",
-                      mode: 'lines'
+                      mode: 'lines',
+                      fill: "tozeroy",
                     },
                   ]}
                   layout={{ title: "AGLBaro through time" }}
@@ -157,7 +164,8 @@ export default function Demo() {
                       x: data.time,
                       y: data.vdop,
                       type: "scatter",
-                      line: {shape: 'linear'},
+                      line: {shape: 'hv'},
+                      mode: 'lines+markers',
                     },
                   ]}
                   layout={{ title: "VDOP through time" }}
