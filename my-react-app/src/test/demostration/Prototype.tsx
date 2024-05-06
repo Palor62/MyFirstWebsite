@@ -11,18 +11,20 @@ export default function Demo() {
   const [data, setData] = useState<any[]>([]);
   const processDat = (csvData: string) => {
     const allRows = csvData.split("\n").map((row) => row.split(","));
-    const x = [];
-    const y = [];
-    const z = [];
+    const time = [];
+    const alt = [];
+    const agl = [];
+    const vdop = [];
 
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
-      x.push(row[0]);
-      y.push(row[1]);
-      z.push(row[2]);
+      time.push(row[0]);
+      alt.push(row[1]);
+      agl.push(row[2]);
+      vdop.push(row[3]);
     }
 
-    setData({ x, y, z});
+    setData({ time, alt, agl, vdop });
   };
 
   useEffect(() => {
@@ -129,36 +131,36 @@ export default function Demo() {
               <div className="box3">
                 <Plot
                   data={[
-                    { x: data.x, y: data.z, type: "scatter", fill: "tozeroy" },
+                    {
+                      x: data.time,
+                      y: data.alt,
+                      type: "scatter",
+                      fill: "tozeroy",
+                    },
                   ]}
                   layout={{ title: "Altitude through time" }}
                 />
                 <Plot
                   data={[
                     {
-                      r: [39, 28, 8, 7, 28, 39, 18, 11, 39],
-                      theta: ["E", "NE", "N", "NW", "W", "SW", "S", "SE", "E"],
-                      fill: "toself",
-                      type: "scatterpolar",
-                      name: "latitude",
-                    },
-                    {
-                      r: [30, 39, 17, 9, 6, 33, 12, 48, 30],
-                      theta: ["E", "NE", "N", "NW", "W", "SW", "S", "SE", "E"],
-                      fill: "toself",
-                      type: "scatterpolar",
-                      name: "longtitude",
+                      x: data.time,
+                      y: data.agl,
+                      type: "scatter",
+                      mode: 'lines'
                     },
                   ]}
-                  layout={{
-                    title: "Latitude and Longtitude",
-                    polar: {
-                      radialaxis: {
-                        visible: true,
-                        range: [0, 50],
-                      },
+                  layout={{ title: "AGLBaro through time" }}
+                />
+                <Plot
+                  data={[
+                    {
+                      x: data.time,
+                      y: data.vdop,
+                      type: "scatter",
+                      line: {shape: 'linear'},
                     },
-                  }}
+                  ]}
+                  layout={{ title: "VDOP through time" }}
                 />
               </div>
             ) : (
@@ -253,7 +255,35 @@ export default function Demo() {
               </div>
             )}
           </div>
-          <div className="box3"></div>
+          <div className="box3">
+            <Plot
+              data={[
+                {
+                  r: [39, 28, 8, 7, 28, 39, 18, 11, 39],
+                  theta: ["E", "NE", "N", "NW", "W", "SW", "S", "SE", "E"],
+                  fill: "toself",
+                  type: "scatterpolar",
+                  name: "latitude",
+                },
+                {
+                  r: [30, 39, 17, 9, 6, 33, 12, 48, 30],
+                  theta: ["E", "NE", "N", "NW", "W", "SW", "S", "SE", "E"],
+                  fill: "toself",
+                  type: "scatterpolar",
+                  name: "longtitude",
+                },
+              ]}
+              layout={{
+                title: "Latitude and Longtitude",
+                polar: {
+                  radialaxis: {
+                    visible: true,
+                    range: [0, 50],
+                  },
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
