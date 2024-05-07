@@ -52,3 +52,20 @@
               </div>
             </div>
 */
+/*
+          <div className="box3">
+            <select>
+              <option value="6h">6 hours</option>
+              <option value="12h">12 hours</option>
+              <option value="24h">24 hours</option>
+            </select>
+            <form>
+              <input type="checkbox" />
+              <label>ID1</label>
+              <input type="checkbox" />
+              <label>ID2</label>
+              <input type="checkbox" />
+              <label>ID3</label>
+            </form>
+          </div>
+*/
