@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
 import "./style.css";
-import logo from "./img/dashboard.png";
 import Barholder from "../components/Barholder.tsx";
 
-const bool = true; //airborne, disconnections, messagecounter, speed, temp, bat - rsrp, rsrq,,,rssi: -61, -63, -57, -59, -61, -61, -57, -59, -55, -61, -59, -53, -61, -55, -53, -59
+const bool = true; //messagecounter=62, speed=71, temp=39, bat=58 - rsrq_nc = 0
+
+//Circle
+interface CircleProps {
+  value: string;
+  label: string;
+}
+
+const Circle: React.FC<CircleProps> = ({ value, label }) => {
+  return (
+    <div className="circle">
+      <div className="circle-content">
+        <div className="value">{value}</div>
+        <div className="label">{label}</div>
+      </div>
+    </div>
+  );
+};
 
 export default function Demo() {
   //Csv
@@ -19,6 +35,9 @@ export default function Demo() {
     const snr = [];
     const lat = [];
     const long = [];
+    const rssi = [];
+    const rssp = [];
+    const rssq = [];
 
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
@@ -26,9 +45,16 @@ export default function Demo() {
       alt.push(row[1]);
       agl.push(row[2]);
       vdop.push(row[3]);
+      hdop.push(row[4]);
+      snr.push(row[5]);
+      lat.push(row[6]);
+      long.push(row[7]);
+      rssi.push(row[7]);
+      rssp.push(row[7]);
+      rssq.push(row[7]);
     }
 
-    setData({ time, alt, agl, vdop });
+    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rssp, rssq });
   };
 
   useEffect(() => {
@@ -53,71 +79,18 @@ export default function Demo() {
       <div className="box">
         <div className="box2">
           <div className="box3">
-            <div className="cardbox">
-              <div className="location">
-                <div className="location2">
-                  <div className="location3">
-                    <div className="number">Usage</div>
-                    <div className="number">14</div>
-                  </div>
-                  <div className="location3">
-                    <img src={logo} alt="Logo" className="logo" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="cardbox">
-              <div className="location">
-                <div className="location2">
-                  <div className="location3">
-                    <div className="number">Location</div>
-                    <div className="number">Odense</div>
-                  </div>
-                  <div className="location3">
-                    <img src={logo} alt="Logo" className="logo" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="cardbox">
-              <div className="location">
-                <div className="location2">
-                  <div className="location3">
-                    <div className="number">Airtime</div>
-                    <div className="number">89:53:21</div>
-                  </div>
-                  <div className="location3">
-                    <img src={logo} alt="Logo" className="logo" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="cardbox">
-              <div className="location">
-                <div className="location2">
-                  <div className="location3">
-                    <div className="number">NoF</div>
-                    <div className="number">274</div>
-                  </div>
-                  <div className="location3">
-                    <img src={logo} alt="Logo" className="logo" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <h1>AirPlates drone flight history</h1>
+          </div>
+          <div className="box3">
+            <Circle value={"false"} label="Airborne" />
+            <Circle value={"0"} label="Disconnectioned" />
+            <Circle value={"1"} label="Airtime(h)" />
           </div>
           <div className="box3">
             <select>
-              <option value="1h">1 hour</option>
               <option value="6h">6 hours</option>
               <option value="12h">12 hours</option>
               <option value="24h">24 hours</option>
-            </select>
-            <select>
-              <option value="1h">ID1</option>
-              <option value="6h">ID2</option>
-              <option value="12h">ID3</option>
-              <option value="24h">ID4</option>
             </select>
             <form>
               <input type="checkbox" />
@@ -126,8 +99,6 @@ export default function Demo() {
               <label>ID2</label>
               <input type="checkbox" />
               <label>ID3</label>
-              <input type="checkbox" />
-              <label>ID4</label>
             </form>
           </div>
           <div className="box3">
@@ -139,10 +110,16 @@ export default function Demo() {
                       x: data.time,
                       y: data.alt,
                       type: "scatter",
-                      marker: {color: 'orange'},
-                      name: "line"
+                      marker: { color: "orange" },
+                      name: "line",
                     },
-                    {type: 'bar', x: data.time, y: data.alt, marker: {color: 'blue'}, name: "bar"}
+                    {
+                      type: "bar",
+                      x: data.time,
+                      y: data.alt,
+                      marker: { color: "blue" },
+                      name: "bar",
+                    },
                   ]}
                   layout={{ title: "Altitude through time" }}
                 />
@@ -152,7 +129,7 @@ export default function Demo() {
                       x: data.time,
                       y: data.agl,
                       type: "scatter",
-                      mode: 'lines',
+                      mode: "lines",
                       fill: "tozeroy",
                     },
                   ]}
@@ -164,11 +141,20 @@ export default function Demo() {
                       x: data.time,
                       y: data.vdop,
                       type: "scatter",
-                      line: {shape: 'hv'},
-                      mode: 'lines+markers',
+                      line: { shape: "hv" },
+                      mode: "lines+markers",
+                      name: "VDOP",
+                    },
+                    {
+                      x: data.time,
+                      y: data.hdop,
+                      type: "scatter",
+                      line: { shape: "hv" },
+                      mode: "lines+markers",
+                      name: "HDOP",
                     },
                   ]}
-                  layout={{ title: "VDOP through time" }}
+                  layout={{ title: "VDOP and HDOP through time" }}
                 />
               </div>
             ) : (
@@ -290,6 +276,17 @@ export default function Demo() {
                   },
                 },
               }}
+            />
+            <Plot
+              data={[
+                {
+                  x: data.time,
+                  y: data.snr,
+                  type: "scatter",
+                  mode: "lines",
+                },
+              ]}
+              layout={{ title: "SNR through time" }}
             />
           </div>
         </div>
