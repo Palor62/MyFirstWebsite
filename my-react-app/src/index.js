@@ -6,7 +6,7 @@ import Skills from "./pages/Skills";
 import Completed from "./pages/Completed";
 import Error from "./pages/Error";
 import TabsOverview from "./test/TabsOverview.tsx"
-
+import Demo from "./test/demostration/Prototype.tsx";
 
 export default function App(){
   return (
@@ -18,6 +18,7 @@ export default function App(){
           <Route path="completed" element={<Completed />}/>
           <Route path="*" element={<Error />}/>
           <Route path="tabsoverview" element={<TabsOverview />}/>
+          <Route path="dashboard" element={<Demo />}/>
         </Route>
       </Routes>
     </BrowserRouter>

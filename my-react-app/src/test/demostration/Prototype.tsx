@@ -3,7 +3,7 @@ import Plot from "react-plotly.js";
 import "./style.css";
 import Barholder from "../components/Barholder.tsx";
 
-const bool = true; 
+const bool = true;
 
 //Circle
 interface CircleProps {
@@ -36,8 +36,8 @@ export default function Demo() {
     const lat = [];
     const long = [];
     const rssi = [];
-    const rssp = [];
-    const rssq = [];
+    const rsrp = [];
+    const rsrq = [];
 
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
@@ -50,11 +50,11 @@ export default function Demo() {
       lat.push(row[6]);
       long.push(row[7]);
       rssi.push(row[8]);
-      rssp.push(row[9]);
-      rssq.push(row[10]);
+      rsrp.push(row[9]);
+      rsrq.push(row[10]);
     }
 
-    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rssp, rssq });
+    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq });
   };
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function Demo() {
                       fill: "tozeroy",
                     },
                   ]}
-                  layout={{ title: "Altitude through time" }}
+                  layout={{ title: "Altitude through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Altitude(m)'},}}
                 />
                 <Plot
                   data={[
@@ -111,7 +111,7 @@ export default function Demo() {
                       line: { shape: "spline" },
                     },
                   ]}
-                  layout={{ title: "AGLBaro through time" }}
+                  layout={{ title: "AGLBaro through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'AGLBaro(m)'}, }}
                 />
               </div>
             ) : (
@@ -123,31 +123,36 @@ export default function Demo() {
           </div>
           <div className="box3">
             <Plot
-              data={[
-                {
-                  r: [39, 28, 8, 7, 28, 39, 18, 11, 39],
-                  theta: ["E", "NE", "N", "NW", "W", "SW", "S", "SE", "E"],
-                  fill: "toself",
-                  type: "scatterpolar",
-                  name: "latitude",
-                },
-                {
-                  r: [30, 39, 17, 9, 6, 33, 12, 48, 30],
-                  theta: ["E", "NE", "N", "NW", "W", "SW", "S", "SE", "E"],
-                  fill: "toself",
-                  type: "scatterpolar",
-                  name: "longtitude",
-                },
+            data={[
+               {type: 'scatter', x: [0,0,0,0,50,55.7,55.7,54.2,0,38.9,0,0,0,0,0,0], y: [0,0,0,0,12.5,12.5,12.5,0,0,12.5,0,0,0,0,0,0], mode: "markers", marker: {color: "rgb(102,0,0)"}},
+               {type: 'histogram2dcontour', x: [0,0,0,0,50,55.7,55.7,54.2,0,38.9,0,0,0,0,0,0], y: [0,0,0,0,12.5,12.5,12.5,0,0,12.5,0,0,0,0,0,0]},
+               {type: 'histogram', x: [0,0,0,0,50,55.7,55.7,54.2,0,38.9,0,0,0,0,0,0], yaxis: "y2", marker: {color: 'rgb(102,0,0)'},},
+               {type: 'histogram', y: [0,0,0,0,12.5,12.5,12.5,0,0,12.5,0,0,0,0,0,0], xaxis: "x2", marker: {color: 'rgb(102,0,0)'},},
               ]}
-              layout={{
-                title: "Latitude and Longtitude",
-                polar: {
-                  radialaxis: {
-                    visible: true,
-                    range: [0, 50],
-                  },
-                },
-              }}
+               layout={{ title: "Latitude and Longtitude", margin: {t: 50}, bargap: 0, showlegend: false,
+               xaxis: {
+                domain: [0, 0.85],
+                showgrid: false,
+                zeroline: false,
+                title: 'Latitude(°)',
+              },
+              yaxis: {
+                domain: [0, 0.85],
+                showgrid: false,
+                zeroline: false,
+                title: 'Longtitude(°)',
+              }, 
+              xaxis2: {
+                domain: [0.85, 1],
+                showgrid: false,
+                zeroline: false,
+              },
+              yaxis2: {
+                domain: [0.85, 1],
+                showgrid: false,
+                zeroline: false
+              }
+            }}
             />
             <Plot
               data={[
@@ -168,7 +173,7 @@ export default function Demo() {
                   name: "HDOP",
                 },
               ]}
-              layout={{ title: "VDOP and HDOP through time" }}
+              layout={{ title: "VDOP and HDOP through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'VDOP/HDOP'}, }}
             />
           </div>
           <div className="box3">
@@ -178,7 +183,7 @@ export default function Demo() {
                   data={[
                     {
                       type: "indicator",
-                      value: 87,
+                      value: 67,
                       gauge: { axis: { range: [0, 100] } },
                       domain: { row: 0, column: 0 },
                     },
@@ -192,7 +197,7 @@ export default function Demo() {
                       data: {
                         indicator: [
                           {
-                            title: { text: "Top speed" },
+                            title: { text: "Average speed" },
                             mode: "gauge+number",
                           },
                         ],
@@ -203,8 +208,8 @@ export default function Demo() {
                 <Plot
                   data={[
                     {
-                      r: [39, 71, 58, 62, 48, 39],
-                      theta: ["Temp", "Spd", "Bat", "Msg", "Bat%", "Temp"],
+                      r: [39, 71, 34, 62, 85, 39],
+                      theta: ["Temp", "Spd", "Bat(V)", "Msg", "Bat%", "Temp"],
                       fill: "toself",
                       type: "scatterpolar",
                     },
@@ -221,31 +226,16 @@ export default function Demo() {
                     },
                   }}
                 />
-                <Plot
-                  data={[
-                    {
-                      type: "indicator",
-                      value: 40,
-                      gauge: { shape: "bullet", axis: { range: [0, 100] } },
-                      domain: { row: 0, column: 0 },
-                    },
-                  ]}
-                  layout={{
-                    width: 700,
-                    height: 300,
-                    grid: { rows: 2, columns: 2, pattern: "independent" },
-                    template: {
-                      data: {
-                        indicator: [
-                          {
-                            title: { text: "Battery" },
-                            mode: "gauge+number",
-                          },
-                        ],
-                      },
-                    },
-                  }}
-                />
+              <Plot
+                data={[
+                  {
+                    values: [6, 34],
+                    labels: ['Battery used', 'Battery left'],
+                    type: 'pie',
+                  },
+                ]}
+                layout={ {width: 500, height: 400, title: 'Battery usage'} }
+              />
               </div>
             ) : (
               <div className="box3">
@@ -265,7 +255,7 @@ export default function Demo() {
                   mode: "lines",
                 },
               ]}
-              layout={{ title: "SNR through time" }}
+              layout={{ title: "SNR through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'SNR(dB)'}, }}
             />
             <Plot
               data={[
@@ -273,34 +263,30 @@ export default function Demo() {
                   x: data.time,
                   y: data.rssi,
                   type: "scatter",
-                  name: "rssi"
+                  name: "RSSI",
                 },
                 {
                   x: data.time,
-                  y: data.rssp,
-                  xaxis: 'x2',
-                  yaxis: 'y2',
+                  y: data.rsrp,
+                  xaxis: "x2",
+                  yaxis: "y2",
                   type: "scatter",
-                  name: "rssp"
+                  name: "RSRP",
                 },
                 {
                   x: data.time,
-                  y: data.rssq,
-                  xaxis: 'x3',
-                  yaxis: 'y3',
+                  y: data.rsrq,
+                  xaxis: "x3",
+                  yaxis: "y3",
                   type: "scatter",
-                  name: "rssq"
-                },
-                {
-                  x: data.time,
-                  y: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                  xaxis: 'x4',
-                  yaxis: 'y4',
-                  type: "scatter",
-                  name: "rssq_nc"
+                  name: "RSRQ",
                 },
               ]}
-              layout={{ title: "Rs", grid: {rows: 2, columns: 2, pattern: 'independent'}, }}
+              layout={{
+                title: "Reference Signal(RS) attributes",
+                grid: { rows: 3, columns: 1, pattern: "independent" },
+                xaxis3: {title: 'Time(TS) '}, yaxis: {title: 'RSSI(dBm)'}, yaxis2: {title: 'RSRP(dBm)'}, yaxis3: {title: 'RSRQ(dB)'}
+              }}
             />
           </div>
         </div>
@@ -308,8 +294,4 @@ export default function Demo() {
     </div>
   );
 }
-/*    const rssi = [];
-    const rssp = [];
-    const rssq = [];
-    //rsrq_nc = 0
-    */ 
+

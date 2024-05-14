@@ -10,6 +10,8 @@ import Multigraph from '../components/Multigraph.tsx';
 import Transformgraph from "../components/Transformgraph.tsx";
 import Dropdowns from "../components/Dropdowns.tsx";
 import Calendar from 'react-calendar'
+import ColorChanger from "../components/ColorChanger.tsx";
+import TypeChanger from "../components/TypeChanger.tsx";
 
 export default function Demo() {
     return (
@@ -118,6 +120,12 @@ export default function Demo() {
             </div>
             <div style={{ display: "flex"}}>
               <Dropdowns/>
+            </div>
+            <div style={{ display: "flex"}}>
+              <ColorChanger/>
+            </div>
+            <div style={{ display: "flex"}}>
+              <TypeChanger/>
             </div>
           </div>
         </div>
