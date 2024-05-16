@@ -87,11 +87,13 @@ export default TypeChanger;
 import React, { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 
-const bool = true;
+//const bool = true;
 
 const TypeChanger: React.FC = () => {
   const [plotType, setPlotType] = useState<string>("scatter");
   const [plotColor, setPlotColor] = useState<string>("red");
+  const [message, setMessage] = useState("");
+  const [bool, setIsChecked] = useState(true);
 
   const handleTypeChange = (type: string) => {
     setPlotType(type);
@@ -101,24 +103,83 @@ const TypeChanger: React.FC = () => {
     setPlotColor(color);
   };
 
+  const alertFunction = () => {
+    const result = window.confirm("Press a button!");
+    if (result) {
+      setMessage("You pressed OK!");
+    } else {
+      setMessage("You pressed Cancel!");
+    }
+  };
+
+  const handleToggle = () => {
+    setIsChecked(!bool);
+  };
+
+  //---
+  const [data, setData] = useState({
+    values: [3, 7],
+    labels: ['Battery used', 'Battery left'],
+  });
+
+  const [batteryPercentage, setBatteryPercentage] = useState(0);
+
+  const handlePieChartUpdated = () => {
+    const firstValue = data.values[0];
+    const secondValue = data.values[1];
+    //const percentage = (firstValue / secondValue) * 100;
+    //setBatteryPercentage(percentage);
+
+    const is20Percent = firstValue / secondValue >= 0.2;
+    if (is20Percent) {
+      alert('Battery is low!');
+      
+    } else {
+      alert(`Battery percentage: ${firstValue / secondValue * 100}%`);
+      
+    }
+  };
+/*
+  const handleAlert = () => {
+    if (batteryPercentage <= 20) {
+      alert('Battery is low!');
+    } else if(batteryPercentage > 20) {
+      alert(`You have ${Math.round(100 - batteryPercentage)}% left`);
+    }
+  };*/
+  //---
+
   return (
     <div>
       <div>
         <button onClick={() => handleTypeChange("scatter")}>Scatter</button>
         <button onClick={() => handleTypeChange("bar")}>Bar</button>
+        <button onClick={() => alertFunction()}>Alert</button>
         <fieldset>
-        <div>
-        <input type="radio" name="color" onClick={() => handleColorChange("red")}/>
-        <label>Red</label>
-        </div>
-        <div>
-        <input type="radio" name="color" onClick={() => handleColorChange("green")}/>
-        <label>Green</label>
-        </div>
-        <div>
-        <input type="radio" name="color" onClick={() => handleColorChange("blue")}/>
-        <label>Blue</label>
-        </div>
+          <div>
+            <input
+              type="radio"
+              name="color"
+              onClick={() => handleColorChange("red")}
+            />
+            <label>Red</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="color"
+              onClick={() => handleColorChange("green")}
+            />
+            <label>Green</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="color"
+              onClick={() => handleColorChange("blue")}
+            />
+            <label>Blue</label>
+          </div>
         </fieldset>
       </div>
       {bool ? (
@@ -129,7 +190,7 @@ const TypeChanger: React.FC = () => {
                 x: [1, 2, 3],
                 y: [2, 1, 3],
                 type: plotType,
-                marker: {color: plotColor}
+                marker: { color: plotColor },
               },
             ]}
             layout={{
@@ -144,7 +205,7 @@ const TypeChanger: React.FC = () => {
                 x: [1, 2, 3],
                 y: [2, 3, 1],
                 type: plotType,
-                marker: {color: plotColor}
+                marker: { color: plotColor },
               },
             ]}
             layout={{
@@ -159,9 +220,36 @@ const TypeChanger: React.FC = () => {
           <h1>hi</h1>
         </div>
       )}
+      <div>
+        <input
+          type="checkbox"
+          checked={bool}
+          onChange={handleToggle}
+          onClick={handleToggle}
+        />
+        <span style={{ fontSize: 16 }}>{bool ? "On" : "Off"}</span>
+      </div>
+      <div>
+      <Plot
+        data={[
+          {
+            values: data.values,
+            labels: data.labels,
+            type: 'pie',
+          },
+        ]}
+        layout={ {
+          width: 500,
+          height: 400,
+          title: 'Battery usage',
+        } }
+        
+      />
+      <button onClick={handlePieChartUpdated}>Check Battery</button>
     </div>
-    
+    </div>
   );
 };
 
 export default TypeChanger;
+//onClick={handleAlert} in last button
