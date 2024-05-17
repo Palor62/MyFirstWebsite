@@ -807,19 +807,25 @@ const App: React.FC = () => {
   const [measurements, setMeasurements] = useState<string[]>([]); // State to manage selected measurements
   const [startTime, setStartTime] = useState<string>(''); // State to manage the start time
   const [stopTime, setStopTime] = useState<string>(''); // State to manage the stop time
+  const [traces2, setTraces2] = useState<any[]>([]);
+  const [traces3, setTraces3] = useState<any[]>([]);
+  const [traces4, setTraces4] = useState<any[]>([]);
+  const [traces5, setTraces5] = useState<any[]>([]);
+  const [traces6, setTraces6] = useState<any[]>([]);
+  const [traces7, setTraces7] = useState<any[]>([]);
 
   // List of available measurements to choose from
   const availableMeasurements = [
-    '4DF5E020C901F8D3E',
-    '4DF5E020C901F8D67',
-    '4DF5E020C901F8DA1'
+    '4DF5E020C901F8CC9',
+    '4DF5E020C901F8D2C',
+    '4DF5E020C901F8D67'
   ];
 
   // Define a mapping of measurements to colors
   const measurementColors = {
-    '4DF5E020C901F8D3E': 'red',
-    '4DF5E020C901F8D67': 'blue',
-    '4DF5E020C901F8DA1': 'green'
+    '4DF5E020C901F8CC9': 'red',
+    '4DF5E020C901F8D2C': 'blue',
+    '4DF5E020C901F8D67': 'green'
     // Add more colors for additional measurements
   };
 
@@ -866,7 +872,7 @@ const App: React.FC = () => {
           const measurementData = data[measurement] || [];
           return {
             type: 'scatter',
-            mode: 'lines',
+            fill: "tozeroy",
             name: `Measurement ${measurement}`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
@@ -874,8 +880,88 @@ const App: React.FC = () => {
           };
         });
 
+        const newTraces2 = measurements.map((measurement) => {
+            const measurementData = data[measurement] || [];
+            return {
+              type: "scatter",
+              mode: "lines",
+              fill: "tozeroy",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black', shape: "spline" } // Use the defined color or fallback to black
+            };
+          });
+
+          const newTraces3 = measurements.map((measurement) => {
+            const measurementData = data[measurement] || [];
+            return {
+              type: "scatter",
+              mode: "lines+markers",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black', shape: "hv" } // Use the defined color or fallback to black
+            };
+          });
+
+          const newTraces4 = measurements.map((measurement) => {
+            const measurementData = data[measurement] || [];
+            return {
+              type: "scatter",
+              mode: "lines",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' } // Use the defined color or fallback to black
+            };
+          });
+
+          const newTraces5 = measurements.map((measurement) => {
+            const measurementData = data[measurement] || [];
+            return {
+              type: "scatter",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' } // Use the defined color or fallback to black
+            };
+          });
+
+          const newTraces6 = measurements.map((measurement) => {
+            const measurementData = data[measurement] || [];
+            return {
+              type: "scatter",
+              xaxis: "x2",
+              yaxis: "y2",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' } // Use the defined color or fallback to black
+            };
+          });
+
+          const newTraces7 = measurements.map((measurement) => {
+            const measurementData = data[measurement] || [];
+            return {
+              type: "scatter",
+              xaxis: "x3",
+              yaxis: "y3",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' } // Use the defined color or fallback to black
+            };
+          });
+
         // Update the state with the traces data
         setTraces(newTraces);
+        setTraces2(newTraces2);
+        setTraces3(newTraces3);
+        setTraces4(newTraces4);
+        setTraces5(newTraces5);
+        setTraces6(newTraces6);
+        setTraces7(newTraces7);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data');
@@ -930,7 +1016,34 @@ const App: React.FC = () => {
       {traces.length > 0 && (
         <Plot
           data={traces}
-          layout={{ title: 'Measurements over Time' }}
+          layout={{ title: "Altitude during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Altitude(m)'} }}
+        />
+      )}
+      {traces2.length > 0 && (
+        <Plot
+          data={traces2}
+          layout={{ title: "AGL during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'AGL(m)'} }}
+        />
+      )}
+      {traces3.length > 0 && (
+        <Plot
+          data={traces3}
+          layout={{ title: "VDOP during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'VDOP'} }}
+        />
+      )}
+      {traces4.length > 0 && (
+        <Plot
+          data={traces4}
+          layout={{ title: "SNR during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'SNR(dB)'} }}
+        />
+      )}
+      {traces5.length > 0 && traces6.length > 0 && traces7.length > 0 &&(
+        <Plot
+          data={[...traces5, ...traces6, ...traces7]}
+          layout={{ title: "RS during flight", 
+          grid: { rows: 3, columns: 1, pattern: "independent" },
+          xaxis3: {title: 'Time(TS) '}, yaxis: {title: 'RSSI(dBm)'}, yaxis2: {title: 'RSRP(dBm)'}, yaxis3: {title: 'RSRQ(dB)'}
+           }}
         />
       )}
     </div>
