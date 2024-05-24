@@ -35,12 +35,12 @@ const App: React.FC = () => {
   const [latLongTrace, setLatLongTrace] = useState<any[]>([]);
   const [longTrace, setLongTrace] = useState<any[]>([]);
 
+  const [lastTrace, setLastTrace] = useState<any[]>([]);
+  const [meanTrace, setMeanTrace] = useState<any[]>([]);
   const [tempTrace, setTempTrace] = useState<any[]>([]);
   const [spdTrace, setSpdTrace] = useState<any[]>([]);
   const [batvTrace, setBatvTrace] = useState<any[]>([]);
   const [msgTrace, setMsgTrace] = useState<any[]>([]);
-  const [lastTrace, setLastTrace] = useState<any[]>([]);
-  const [meanTrace, setMeanTrace] = useState<any[]>([]);
 
   const [snrTrace, setSnrTrace] = useState<any[]>([]);
   const [rssiTrace, setRssiTrace] = useState<any[]>([]);
@@ -66,6 +66,11 @@ const App: React.FC = () => {
     '352709570805663': 'blue',
     '4DF5E020C901F8BC9': 'green'
     // Add more colors for additional measurements
+  };
+
+  const [bool, setIsChecked] = useState(true);
+  const handleToggle = () => {
+    setIsChecked(!bool);
   };
 
   useEffect(() => {
@@ -204,29 +209,6 @@ const App: React.FC = () => {
             };
           });
 
-          const traceForLatLong = measurements.map((measurement) => {
-            const measurementData1 = latData[measurement] || [];
-            const measurementData2 = longData[measurement] || [];
-            const alignedData = measurementData1.map((latItem: any) => {
-                const longItem = measurementData2.find((item: any) => item._time === latItem._time);
-            return {
-                time: latItem._time,
-                lat: latItem._value,
-                long: longItem ? longItem._value : null,
-            };
-        }).filter((item: any) => item.long !== null); // Filter out data points where speed is not available
-
-        return {
-            //type: 'histogram2dcontour',
-            type: 'scatter',
-            mode: 'markers',
-            name: `Measurement ${measurement}`,
-            x: alignedData.map((item: any) => item.lat),
-            y: alignedData.map((item: any) => item.long),
-            marker: { color: measurementColors[measurement] || 'black' }
-            };
-          });
-
           const traceForVdop = measurements.map((measurement) => {
             const measurementData = vdopData[measurement] || [];
             return {
@@ -251,14 +233,46 @@ const App: React.FC = () => {
             };
           });
 
-          const traceForSpd = measurements.map((measurement) => {
-            const measurementData = spdData[measurement] || [];
+          const traceForLat = measurements.map((measurement) => {
+            const measurementData = latData[measurement] || [];
             return {
-              type: "bar",
+              type: "histogram",
               name: `Measurement ${measurement}`,
-              x: measurementData.map((item: any) => item._time),
-              y: measurementData.map((item: any) => item._value),
-              line: { color: measurementColors[measurement] || 'black' }
+              x: measurementData.map((item: any) => item._value),
+              marker: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForLatLong = measurements.map((measurement) => {
+            const measurementData1 = latData[measurement] || [];
+            const measurementData2 = longData[measurement] || [];
+            const alignedData = measurementData1.map((latItem: any) => {
+                const longItem = measurementData2.find((item: any) => item._time === latItem._time);
+            return {
+                time: latItem._time,
+                lat: latItem._value,
+                long: longItem ? longItem._value : null,
+            };
+        }).filter((item: any) => item.long !== null); // Filter out data points where speed is not available
+
+        return {
+            //type: 'histogram2dcontour',
+            type: 'scatter',
+            mode: 'markers',
+            name: `Measurement ${measurement}`,
+            x: alignedData.map((item: any) => item.lat),
+            y: alignedData.map((item: any) => item.long),
+            marker: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForLong = measurements.map((measurement) => {
+            const measurementData = longData[measurement] || [];
+            return {
+              type: "histogram",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._value),
+              marker: { color: measurementColors[measurement] || 'black' }
             };
           });
 
@@ -313,6 +327,56 @@ const App: React.FC = () => {
             type: "scatterpolar",
             name: `Measurement ${measurement}`,
             line: { color: measurementColors[measurement] || 'black'}
+            };
+          });
+
+          const traceForTemp = measurements.map((measurement) => {
+            const measurementData = tempData[measurement] || [];
+            return {
+              type: "bar",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              marker: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForSpd = measurements.map((measurement) => {
+            const measurementData = spdData[measurement] || [];
+            return {
+              type: "bar",
+              name: `Measurement ${measurement}`,
+              xaxis: "x2",
+              yaxis: "y2",
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              marker: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForBatv = measurements.map((measurement) => {
+            const measurementData = batvData[measurement] || [];
+            return {
+              type: "bar",
+              name: `Measurement ${measurement}`,
+              xaxis: "x3",
+              yaxis: "y3",
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              marker: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForMsg = measurements.map((measurement) => {
+            const measurementData = msgData[measurement] || [];
+            return {
+              type: "bar",
+              name: `Measurement ${measurement}`,
+              xaxis: "x4",
+              yaxis: "y4",
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              marker: { color: measurementColors[measurement] || 'black' }
             };
           });
 
@@ -399,26 +463,41 @@ const App: React.FC = () => {
               name: `Measurement ${measurement}`,
               x: measurementData5.map((item: any) => item._time),
               y: measurementData5.map((item: any) => item._value),
-              marker: { color: measurementColors[measurement] || 'black' }*/
+              marker: { color: measurementColors[measurement] || 'black' }*//*
               type: "histogram",
               name: `Measurement ${measurement}`,
               x: measurementData5.map((item: any) => item._value),
-              marker: { color: measurementColors[measurement] || 'black' }/*
+              marker: { color: measurementColors[measurement] || 'black' }*//*
               values: [...measurementData6.map((item: any) => item._value), ...data],
               type: "pie",
               marker: { colors: measurementColors[measurement] || 'black' }*/
+              type: "violin",
+              //name: `Measurement ${measurement}`,
+              xaxis: 'x2',
+              y: measurementData5.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' }
           };
           });
 
         // Update the state with the traces data
         setAltTrace(traceForAlt);
         setAglTrace(traceForAgl);
-        setLatLongTrace(traceForLatLong);
+
         setVdopTrace(traceForVdop);
         setHdopTrace(traceForHdop);
-        setSpdTrace(traceForSpd);
+
+        setLatTrace(traceForLat);
+        setLatLongTrace(traceForLatLong);
+        setLongTrace(traceForLong);
+
         setLastTrace(traceForLast);
         setMeanTrace(traceForMean);
+
+        setTempTrace(traceForTemp);
+        setSpdTrace(traceForSpd);
+        setBatvTrace(traceForBatv);
+        setMsgTrace(traceForMsg);
+
         setSnrTrace(traceForSnr);
         setRssiTrace(traceForRssi);
         setRsrpTrace(traceForRsrp);
@@ -482,6 +561,13 @@ const App: React.FC = () => {
           </option>
         ))}
       </select>
+      <input
+                type="checkbox"
+                checked={bool}
+                onChange={handleToggle}
+                onClick={handleToggle}
+              />
+              <span style={{ fontSize: 16 }}>{bool ? "On" : "Off"}</span>
           </div>
           </div>
           </div>
@@ -515,22 +601,30 @@ const App: React.FC = () => {
       )}
       </div>
       <div className="box3">
+      {latTrace.length > 0 && (
+        <Plot
+          data={latTrace}
+          layout={{ title: "Parameters during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Latitude(°)'} 
+  
+           }}
+        />
+      )}
       {latLongTrace.length > 0 && (
         <Plot
           data={latLongTrace}
           layout={{ title: "Latitude and Longtitude", xaxis: {title: 'Latitude(°) '}, yaxis: {title: 'Longtitude(°)'} }}
         />
       )}
-      </div>
-      <div className="box3">
-      {spdTrace.length > 0 && (
+      {longTrace.length > 0 && (
         <Plot
-          data={spdTrace}
-          layout={{ title: "Parameters during flight", 
+          data={longTrace}
+          layout={{ title: "Parameters during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Longtitude(°)'} 
   
            }}
         />
       )}
+      </div>
+      <div className="box3">
       {lastTrace.length > 0 && (
         <Plot
           data={lastTrace}
@@ -545,6 +639,15 @@ const App: React.FC = () => {
       )}
       </div>
       <div className="box3">
+      {tempTrace.length > 0 && spdTrace.length > 0 && batvTrace.length > 0 && msgTrace.length > 0 &&(
+        <Plot
+          data={[...tempTrace, ...spdTrace, ...batvTrace, ...msgTrace]}
+          layout={{ title: "Parameters during flight", 
+          grid: {rows: 2, columns: 2, pattern: 'independent'},
+          xaxis3: {title: 'Time(TS) '}, xaxis4: {title: 'Time(TS) '}, yaxis: {title: 'Temp(C)'}, yaxis2: {title: 'Spd(m/s)'}, yaxis3: {title: 'Bat(V)'}, yaxis4: {title: 'MsgCount'}
+           }}
+        />
+      )}
       {snrTrace.length > 0 && (
         <Plot
           data={snrTrace}
@@ -562,11 +665,35 @@ const App: React.FC = () => {
       )}
       </div>
       <div className="box3">
-      {testTrace.length > 0 && (
+      {testTrace.length > 0 && latLongTrace.length > 0 &&(
         <Plot
-          data={testTrace}
-          layout={{ title: "Test", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Altitude(m)'}, 
-
+          data={[...testTrace, ...latLongTrace]}
+          layout={{ title: "Test", 
+          margin: { t: 50 },
+          bargap: 0,
+          showlegend: false,
+          xaxis: {
+            domain: [0, 0.85],
+            showgrid: false,
+            zeroline: false,
+            title: "Latitude(°)",
+          },
+          yaxis: {
+            domain: [0, 0.85],
+            showgrid: false,
+            zeroline: false,
+            title: "Longtitude(°)",
+          },
+          xaxis2: {
+            domain: [0.85, 1],
+            showgrid: false,
+            zeroline: false,
+          },
+          yaxis2: {
+            domain: [0.85, 1],
+            showgrid: false,
+            zeroline: false,
+          },
         }}
         />
       )}
