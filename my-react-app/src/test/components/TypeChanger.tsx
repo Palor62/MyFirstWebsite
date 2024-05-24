@@ -117,6 +117,28 @@ const TypeChanger: React.FC = () => {
   };
 
   //---
+  const [batteryPercentage, setBatteryPercentage] = useState(0);
+
+  const data = {
+    values: [6, 34], // Example values, replace with actual data
+    labels: ['Used', 'Total'],
+  };
+
+  const handlePieChartUpdated = () => {
+    const firstValue = data.values[0];
+    const secondValue = data.values[1];
+    //const percentage = (firstValue / secondValue) * 100;
+    const percentage = (secondValue / 40) * 100;
+    setBatteryPercentage(percentage);
+
+    const isBelow20Percent = percentage < 20;
+    if (isBelow20Percent) {
+      alert(`Battery is low at: ${percentage}%! Need charging!`);
+    } else {
+      alert(`Battery percentage: ${percentage.toFixed(2)}%`);
+    }
+  };
+  /*
   const [data, setData] = useState({
     values: [3, 7],
     labels: ['Battery used', 'Battery left'],
@@ -138,7 +160,7 @@ const TypeChanger: React.FC = () => {
       alert(`Battery percentage: ${firstValue / secondValue * 100}%`);
       
     }
-  };
+  };*/
 /*
   const handleAlert = () => {
     if (batteryPercentage <= 20) {
@@ -246,6 +268,23 @@ const TypeChanger: React.FC = () => {
         
       />
       <button onClick={handlePieChartUpdated}>Check Battery</button>
+    </div>
+    <div>
+    <Plot
+            data={[
+              {
+                x: [1, 2, 3],
+                y: [2, 1, 3],
+                type: "bar",
+                colorscale: 'Hot',
+              },
+            ]}
+            layout={{
+              width: 500,
+              height: 400,
+              title: "button",
+            }}
+          />
     </div>
     </div>
   );

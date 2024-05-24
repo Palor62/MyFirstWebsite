@@ -797,35 +797,41 @@ const App: React.FC = () => {
 
 
 
-    import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 
 const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
-  const [traces, setTraces] = useState<any[]>([]);
   const [timeRange, setTimeRange] = useState('12h'); // State to manage the selected time range
   const [measurements, setMeasurements] = useState<string[]>([]); // State to manage selected measurements
   const [startTime, setStartTime] = useState<string>(''); // State to manage the start time
   const [stopTime, setStopTime] = useState<string>(''); // State to manage the stop time
-  const [traces2, setTraces2] = useState<any[]>([]);
-  const [traces3, setTraces3] = useState<any[]>([]);
-  const [traces4, setTraces4] = useState<any[]>([]);
-  const [traces5, setTraces5] = useState<any[]>([]);
-  const [traces6, setTraces6] = useState<any[]>([]);
-  const [traces7, setTraces7] = useState<any[]>([]);
+  const [altTrace, setAltTrace] = useState<any[]>([]);
+  const [aglTrace, setAglTrace] = useState<any[]>([]);
+  const [latLongScatterTrace, setLatLongScatterTrace] = useState<any[]>([]);
+  const [vdopTrace, setVdopTrace] = useState<any[]>([]);
+  const [hdopTrace, setHdopTrace] = useState<any[]>([]);
+  const [spdTrace, setSpdTrace] = useState<any[]>([]);
+  const [radarTrace, setRadarTrace] = useState<any[]>([]);
+  const [batTrace, setBatTrace] = useState<any[]>([]);
+  const [snrTrace, setSnrTrace] = useState<any[]>([]);
+  const [rssiTrace, setRssiTrace] = useState<any[]>([]);
+  const [rsrpTrace, setRsrpTrace] = useState<any[]>([]);
+  const [rsrqTrace, setRsrqTrace] = useState<any[]>([]);
+  const [testTrace, setTestTrace] = useState<any[]>([]);
 
   // List of available measurements to choose from
   const availableMeasurements = [
-    '4DF5E020C901F8CC9',
-    '4DF5E020C901F8D2C',
-    '4DF5E020C901F8D67'
+    '352709570739581',
+    '352709570805663',
+    '4DF5E657CE0B5AB03'
   ];
 
   // Define a mapping of measurements to colors
   const measurementColors = {
-    '4DF5E020C901F8CC9': 'red',
-    '4DF5E020C901F8D2C': 'blue',
-    '4DF5E020C901F8D67': 'green'
+    '352709570739581': 'red',
+    '352709570805663': 'blue',
+    '4DF5E657CE0B5AB03': 'green'
     // Add more colors for additional measurements
   };
 
@@ -860,16 +866,48 @@ const App: React.FC = () => {
         const measurementQuery = measurements.map((m) => `measurement=${m}`).join('&');
 
         // Fetch data from the backend server
-        const response = await fetch(`http://localhost:80/test?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const altResponse = await fetch(`http://localhost:80/test?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const aglResponse = await fetch(`http://localhost:80/agl?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const vdopResponse = await fetch(`http://localhost:80/vdop?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const hdopResponse = await fetch(`http://localhost:80/hdop?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const snrResponse = await fetch(`http://localhost:80/snr?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const rssiResponse = await fetch(`http://localhost:80/rssi?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const rsrpResponse = await fetch(`http://localhost:80/rsrp?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const rsrqResponse = await fetch(`http://localhost:80/rsrq?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const latResponse = await fetch(`http://localhost:80/lat?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const longResponse = await fetch(`http://localhost:80/long?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        
+        const tempResponse = await fetch(`http://localhost:80/temp?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const spdResponse = await fetch(`http://localhost:80/spd?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const batvResponse = await fetch(`http://localhost:80/batv?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        const msgResponse = await fetch(`http://localhost:80/msg?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
 
-        if (!response.ok) {
+        const speedResponse = await fetch(`http://localhost:80/speed?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`);
+        
+        if (!altResponse.ok || !aglResponse.ok || !vdopResponse.ok || !hdopResponse.ok || !snrResponse.ok || !rssiResponse.ok || !rsrpResponse.ok || !rsrqResponse.ok || !latResponse.ok || !longResponse.ok || !tempResponse.ok || !spdResponse.ok || !batvResponse.ok || !msgResponse.ok|| !speedResponse.ok) {
           throw new Error('Failed to fetch data');
         }
-        const data = await response.json();
+        const altData = await altResponse.json();
+        const aglData = await aglResponse.json();
+        const vdopData = await vdopResponse.json();
+        const hdopData = await hdopResponse.json();
+        const snrData = await snrResponse.json();
+        const rssiData = await rssiResponse.json();
+        const rsrpData = await rsrpResponse.json();
+        const rsrqData = await rsrqResponse.json();
+        const latData = await latResponse.json();
+        const longData = await longResponse.json();
+
+        const tempData = await tempResponse.json();
+        const spdData = await spdResponse.json();
+        const batvData = await batvResponse.json();
+        const msgData = await msgResponse.json();
+
+        const speedData = await speedResponse.json();
 
         // Create an array of traces for Plotly, one for each measurement
-        const newTraces = measurements.map((measurement) => {
-          const measurementData = data[measurement] || [];
+        const traceForAlt = measurements.map((measurement) => {
+          const measurementData = altData[measurement] || [];
           return {
             type: 'scatter',
             fill: "tozeroy",
@@ -880,8 +918,8 @@ const App: React.FC = () => {
           };
         });
 
-        const newTraces2 = measurements.map((measurement) => {
-            const measurementData = data[measurement] || [];
+        const traceForAgl = measurements.map((measurement) => {
+            const measurementData = aglData[measurement] || [];
             return {
               type: "scatter",
               mode: "lines",
@@ -893,20 +931,66 @@ const App: React.FC = () => {
             };
           });
 
-          const newTraces3 = measurements.map((measurement) => {
-            const measurementData = data[measurement] || [];
+          const traceForLatLongScatter = measurements.map((measurement) => {
+            const measurementData1 = latData[measurement] || [];
+            const measurementData2 = longData[measurement] || [];
+            const alignedData = measurementData1.map((latItem: any) => {
+                const longItem = measurementData2.find((item: any) => item._time === latItem._time);
+            return {
+                time: latItem._time,
+                lat: latItem._value,
+                long: longItem ? longItem._value : null,
+            };
+        }).filter((item: any) => item.long !== null); // Filter out data points where speed is not available
+
+        return {
+            //type: 'histogram2dcontour',
+            type: 'scatter',
+            mode: 'markers',
+            name: `Measurement ${measurement}`,
+            x: alignedData.map((item: any) => item.lat),
+            y: alignedData.map((item: any) => item.long),
+            marker: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForVdop = measurements.map((measurement) => {
+            const measurementData = vdopData[measurement] || [];
             return {
               type: "scatter",
               mode: "lines+markers",
-              name: `Measurement ${measurement}`,
+              name: `Measurement ${measurement} VDOP`,
               x: measurementData.map((item: any) => item._time),
               y: measurementData.map((item: any) => item._value),
               line: { color: measurementColors[measurement] || 'black', shape: "hv" } // Use the defined color or fallback to black
             };
           });
 
-          const newTraces4 = measurements.map((measurement) => {
-            const measurementData = data[measurement] || [];
+          const traceForHdop = measurements.map((measurement) => {
+            const measurementData = hdopData[measurement] || [];
+            return {
+              type: "scatter",
+              mode: "lines+markers",
+              name: `Measurement ${measurement} HDOP`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black', shape: "hv", dash: "dot" } // Use the defined color or fallback to black
+            };
+          });
+
+          const traceForSpd = measurements.map((measurement) => {
+            const measurementData = spdData[measurement] || [];
+            return {
+              type: "bar",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForRadar = measurements.map((measurement) => {
+            const measurementData = snrData[measurement] || [];
             return {
               type: "scatter",
               mode: "lines",
@@ -917,8 +1001,39 @@ const App: React.FC = () => {
             };
           });
 
-          const newTraces5 = measurements.map((measurement) => {
-            const measurementData = data[measurement] || [];
+          const traceForBat = measurements.map((measurement) => {
+            const measurementData = batvData[measurement] || [];
+            const data = measurementData.map((item: any) => item._value)
+            const data2 = measurementData.map((item: any) => item._value * 10)
+            return {
+                values: [...data , ...data2],
+                /*labels: [
+                  ...data.map((_, index) => `Data ${index + 1}`),
+                  ...data2.map((_, index) => `Data2 ${index + 1}`)
+                ],*/
+                //values: measurementData.map((item: any) => item._value),
+                type: "pie",
+                //type: "scatter",
+                //x: measurementData.map((item: any) => item._time),
+                //y: data,
+                line: { color: measurementColors[measurement] || 'black' }
+            };
+          });
+
+          const traceForSnr = measurements.map((measurement) => {
+            const measurementData = snrData[measurement] || [];
+            return {
+              type: "scatter",
+              mode: "lines",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._time),
+              y: measurementData.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' } // Use the defined color or fallback to black
+            };
+          });
+
+          const traceForRssi = measurements.map((measurement) => {
+            const measurementData = rssiData[measurement] || [];
             return {
               type: "scatter",
               name: `Measurement ${measurement}`,
@@ -928,8 +1043,8 @@ const App: React.FC = () => {
             };
           });
 
-          const newTraces6 = measurements.map((measurement) => {
-            const measurementData = data[measurement] || [];
+          const traceForRsrp = measurements.map((measurement) => {
+            const measurementData = rsrpData[measurement] || [];
             return {
               type: "scatter",
               xaxis: "x2",
@@ -941,8 +1056,8 @@ const App: React.FC = () => {
             };
           });
 
-          const newTraces7 = measurements.map((measurement) => {
-            const measurementData = data[measurement] || [];
+          const traceForRsrq = measurements.map((measurement) => {
+            const measurementData = rsrqData[measurement] || [];
             return {
               type: "scatter",
               xaxis: "x3",
@@ -954,14 +1069,51 @@ const App: React.FC = () => {
             };
           });
 
+
+
+          const traceForTest = measurements.map((measurement) => {
+            const measurementData = tempData[measurement] || [];
+            const measurementData2 = spdData[measurement] || [];
+            const measurementData3 = batvData[measurement] || [];
+            const measurementData4 = msgData[measurement] || [];
+            //const data =
+            return {
+              /*
+              type: "scatter",
+              name: `Measurement ${measurement}`,
+              x: measurementData.map((item: any) => item._value),
+              y: measurementData2.map((item: any) => item._value),
+              line: { color: measurementColors[measurement] || 'black' }
+            };*/
+            r: [...measurementData.map((item: any) => item._value), ...measurementData2.map((item: any) => item._value), ...measurementData3.map((item: any) => item._value), ...measurementData4.map((item: any) => item._value)],
+            theta: [
+                              "temp",
+                              "Spd",
+                              "Bat(V)",
+                              "Msg",
+                              "Bat%",
+                              "temp",
+                            ],
+            fill: "toself",
+            type: "scatterpolar",
+          };
+          });
+
         // Update the state with the traces data
-        setTraces(newTraces);
-        setTraces2(newTraces2);
-        setTraces3(newTraces3);
-        setTraces4(newTraces4);
-        setTraces5(newTraces5);
-        setTraces6(newTraces6);
-        setTraces7(newTraces7);
+        setAltTrace(traceForAlt);
+        setAglTrace(traceForAgl);
+        setLatLongScatterTrace(traceForLatLongScatter);
+        setVdopTrace(traceForVdop);
+        setHdopTrace(traceForHdop);
+        setSpdTrace(traceForSpd);
+        setRadarTrace(traceForRadar);
+        setBatTrace(traceForBat);
+        setSnrTrace(traceForSnr);
+        setRssiTrace(traceForRssi);
+        setRsrpTrace(traceForRsrp);
+        setRsrqTrace(traceForRsrq);
+
+        setTestTrace(traceForTest);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data');
@@ -1013,39 +1165,75 @@ const App: React.FC = () => {
       {error && <div>Error fetching data: {error}</div>}
 
       {/* Render the Plotly chart if trace data is available */}
-      {traces.length > 0 && (
+      {altTrace.length > 0 && (
         <Plot
-          data={traces}
+          data={altTrace}
           layout={{ title: "Altitude during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Altitude(m)'} }}
         />
       )}
-      {traces2.length > 0 && (
+      {aglTrace.length > 0 && (
         <Plot
-          data={traces2}
+          data={aglTrace}
           layout={{ title: "AGL during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'AGL(m)'} }}
         />
       )}
-      {traces3.length > 0 && (
+      {latLongScatterTrace.length > 0 && (
         <Plot
-          data={traces3}
-          layout={{ title: "VDOP during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'VDOP'} }}
+          data={latLongScatterTrace}
+          layout={{ title: "Latitude and Longtitude", xaxis: {title: 'Latitude(°) '}, yaxis: {title: 'Longtitude(°)'} }}
         />
       )}
-      {traces4.length > 0 && (
+      {vdopTrace.length > 0 && hdopTrace.length > 0 &&(
         <Plot
-          data={traces4}
+          data={[...vdopTrace, ...hdopTrace]}
+          layout={{ title: "VDOP and HDOP during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'VDOP and HDOP'} }}
+        />
+      )}
+      
+      {spdTrace.length > 0 && (
+        <Plot
+          data={spdTrace}
+          layout={{ title: "Avg spd", 
+  
+           }}
+        />
+      )}
+      {radarTrace.length > 0 && (
+        <Plot
+          data={radarTrace}
+          layout={{ title: "Radar", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'SNR(dB)'} }}
+        />
+      )}
+      {batTrace.length > 0 && (
+        <Plot
+          data={batTrace}
+          layout={{ title: "Bat pie", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'SNR(dB)'} }}
+        />
+      )}
+      {snrTrace.length > 0 && (
+        <Plot
+          data={snrTrace}
           layout={{ title: "SNR during flight", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'SNR(dB)'} }}
         />
       )}
-      {traces5.length > 0 && traces6.length > 0 && traces7.length > 0 &&(
+      {rssiTrace.length > 0 && rsrpTrace.length > 0 && rsrqTrace.length > 0 &&(
         <Plot
-          data={[...traces5, ...traces6, ...traces7]}
+          data={[...rssiTrace, ...rsrpTrace, ...rsrqTrace]}
           layout={{ title: "RS during flight", 
           grid: { rows: 3, columns: 1, pattern: "independent" },
           xaxis3: {title: 'Time(TS) '}, yaxis: {title: 'RSSI(dBm)'}, yaxis2: {title: 'RSRP(dBm)'}, yaxis3: {title: 'RSRQ(dB)'}
            }}
         />
       )}
+      {testTrace.length > 0 && (
+        <Plot
+          data={testTrace}
+          layout={{ title: "Test", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Altitude(m)'}, 
+
+        }}
+        />
+      )}
+      
     </div>
   );
 };

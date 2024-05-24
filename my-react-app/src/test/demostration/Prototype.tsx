@@ -3,8 +3,6 @@ import Plot from "react-plotly.js";
 import "./style.css";
 import Barholder from "../components/Barholder.tsx";
 
-const bool = true;
-
 //Circle
 interface CircleProps {
   value: string;
@@ -57,6 +55,55 @@ export default function Demo() {
     setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq });
   };
 
+  const [batPct, setBatPct] = useState(0);
+  const batteryData = {
+    values: [6, 34],
+    labels: ["Battery used", "Battery left"],
+  };
+  const tempData = {
+    r: 39,
+    theta: ["Temp"],
+  };
+  const handleAlerts = () => {
+    const secondBatValue = batteryData.values[1];
+    const tempValue = tempData.r;
+    const percentageLeft = (secondBatValue / 40) * 100;
+    setBatPct(percentageLeft);
+    const below20Pct = percentageLeft < 20;
+    const above60Temp = tempValue > 60;
+    if (above60Temp && below20Pct) {
+      alert(
+        `Battery is low at: ${percentageLeft}% need charging!\nDevice is overheated at ${tempValue} degrees Celsius need cooling`
+      );
+    } else if (above60Temp) {
+      alert(
+        `Battery percentage: ${percentageLeft.toFixed(
+          2
+        )}%\nDevice is overheated at ${tempValue} degrees Celsius need cooling`
+      );
+    } else if (below20Pct) {
+      alert(
+        `Battery is low at: ${percentageLeft}% need charging!\nDevice temperature: ${tempValue} degrees Celsius`
+      );
+    } else {
+      alert(
+        `Battery percentage: ${percentageLeft.toFixed(
+          2
+        )}%\nDevice temperature: ${tempValue} degrees Celsius`
+      );
+    }
+  };
+
+  const [plotColor, setPlotColor] = useState<string>("blue");
+  const handleColorChange = (color: string) => {
+    setPlotColor(color);
+  };
+
+  const [bool, setIsChecked] = useState(true);
+  const handleToggle = () => {
+    setIsChecked(!bool);
+  };
+
   useEffect(() => {
     const fetchDat = async () => {
       try {
@@ -87,6 +134,44 @@ export default function Demo() {
             <Circle value={"1"} label="Airtime(h)" />
           </div>
           <div className="box3">
+            <div>
+              <input
+                type="checkbox"
+                checked={bool}
+                onChange={handleToggle}
+                onClick={handleToggle}
+              />
+              <span style={{ fontSize: 16 }}>{bool ? "On" : "Off"}</span>
+            </div>
+            <button onClick={handleAlerts}>Check Battery</button>
+            <fieldset>
+              <div>
+                <input
+                  type="radio"
+                  name="color"
+                  onClick={() => handleColorChange("red")}
+                />
+                <label>Red</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  name="color"
+                  onClick={() => handleColorChange("green")}
+                />
+                <label>Green</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  name="color"
+                  onClick={() => handleColorChange("blue")}
+                />
+                <label>Blue</label>
+              </div>
+            </fieldset>
+          </div>
+          <div className="box3">
             {bool ? (
               <div className="box3">
                 <Plot
@@ -96,9 +181,14 @@ export default function Demo() {
                       y: data.alt,
                       type: "scatter",
                       fill: "tozeroy",
+                      marker: { color: plotColor },
                     },
                   ]}
-                  layout={{ title: "Altitude through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'Altitude(m)'},}}
+                  layout={{
+                    title: "Altitude through time",
+                    xaxis: { title: "Time(TS) " },
+                    yaxis: { title: "Altitude(m)" },
+                  }}
                 />
                 <Plot
                   data={[
@@ -109,9 +199,14 @@ export default function Demo() {
                       mode: "lines",
                       fill: "tozeroy",
                       line: { shape: "spline" },
+                      marker: { color: plotColor },
                     },
                   ]}
-                  layout={{ title: "AGLBaro through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'AGLBaro(m)'}, }}
+                  layout={{
+                    title: "AGLBaro through time",
+                    xaxis: { title: "Time(TS) " },
+                    yaxis: { title: "AGLBaro(m)" },
+                  }}
                 />
               </div>
             ) : (
@@ -123,36 +218,72 @@ export default function Demo() {
           </div>
           <div className="box3">
             <Plot
-            data={[
-               {type: 'scatter', x: [0,0,0,0,50,55.7,55.7,54.2,0,38.9,0,0,0,0,0,0], y: [0,0,0,0,12.5,12.5,12.5,0,0,12.5,0,0,0,0,0,0], mode: "markers", marker: {color: "rgb(102,0,0)"}},
-               {type: 'histogram2dcontour', x: [0,0,0,0,50,55.7,55.7,54.2,0,38.9,0,0,0,0,0,0], y: [0,0,0,0,12.5,12.5,12.5,0,0,12.5,0,0,0,0,0,0]},
-               {type: 'histogram', x: [0,0,0,0,50,55.7,55.7,54.2,0,38.9,0,0,0,0,0,0], yaxis: "y2", marker: {color: 'rgb(102,0,0)'},},
-               {type: 'histogram', y: [0,0,0,0,12.5,12.5,12.5,0,0,12.5,0,0,0,0,0,0], xaxis: "x2", marker: {color: 'rgb(102,0,0)'},},
+              data={[
+                {
+                  type: "scatter",
+                  x: [
+                    0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
+                  ],
+                  y: [
+                    0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
+                  ],
+                  mode: "markers",
+                  marker: { color: "rgb(102,0,0)" },
+                },
+                {
+                  type: "histogram2dcontour",
+                  x: [
+                    0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
+                  ],
+                  y: [
+                    0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
+                  ],
+                },
+                {
+                  type: "histogram",
+                  x: [
+                    0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
+                  ],
+                  yaxis: "y2",
+                  marker: { color: "rgb(102,0,0)" },
+                },
+                {
+                  type: "histogram",
+                  y: [
+                    0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
+                  ],
+                  xaxis: "x2",
+                  marker: { color: "rgb(102,0,0)" },
+                },
               ]}
-               layout={{ title: "Latitude and Longtitude", margin: {t: 50}, bargap: 0, showlegend: false,
-               xaxis: {
-                domain: [0, 0.85],
-                showgrid: false,
-                zeroline: false,
-                title: 'Latitude(°)',
-              },
-              yaxis: {
-                domain: [0, 0.85],
-                showgrid: false,
-                zeroline: false,
-                title: 'Longtitude(°)',
-              }, 
-              xaxis2: {
-                domain: [0.85, 1],
-                showgrid: false,
-                zeroline: false,
-              },
-              yaxis2: {
-                domain: [0.85, 1],
-                showgrid: false,
-                zeroline: false
-              }
-            }}
+              layout={{
+                title: "Latitude and Longtitude",
+                margin: { t: 50 },
+                bargap: 0,
+                showlegend: false,
+                xaxis: {
+                  domain: [0, 0.85],
+                  showgrid: false,
+                  zeroline: false,
+                  title: "Latitude(°)",
+                },
+                yaxis: {
+                  domain: [0, 0.85],
+                  showgrid: false,
+                  zeroline: false,
+                  title: "Longtitude(°)",
+                },
+                xaxis2: {
+                  domain: [0.85, 1],
+                  showgrid: false,
+                  zeroline: false,
+                },
+                yaxis2: {
+                  domain: [0.85, 1],
+                  showgrid: false,
+                  zeroline: false,
+                },
+              }}
             />
             <Plot
               data={[
@@ -173,7 +304,11 @@ export default function Demo() {
                   name: "HDOP",
                 },
               ]}
-              layout={{ title: "VDOP and HDOP through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'VDOP/HDOP'}, }}
+              layout={{
+                title: "VDOP and HDOP through time",
+                xaxis: { title: "Time(TS) " },
+                yaxis: { title: "VDOP/HDOP" },
+              }}
             />
           </div>
           <div className="box3">
@@ -208,10 +343,18 @@ export default function Demo() {
                 <Plot
                   data={[
                     {
-                      r: [39, 71, 34, 62, 85, 39],
-                      theta: ["Temp", "Spd", "Bat(V)", "Msg", "Bat%", "Temp"],
+                      r: [tempData.r, 71, 34, 62, 85, tempData.r],
+                      theta: [
+                        tempData.theta,
+                        "Spd",
+                        "Bat(V)",
+                        "Msg",
+                        "Bat%",
+                        tempData.theta,
+                      ],
                       fill: "toself",
                       type: "scatterpolar",
+                      marker: { color: plotColor },
                     },
                   ]}
                   layout={{
@@ -226,16 +369,16 @@ export default function Demo() {
                     },
                   }}
                 />
-              <Plot
-                data={[
-                  {
-                    values: [6, 34],
-                    labels: ['Battery used', 'Battery left'],
-                    type: 'pie',
-                  },
-                ]}
-                layout={ {width: 500, height: 400, title: 'Battery usage'} }
-              />
+                <Plot
+                  data={[
+                    {
+                      values: batteryData.values,
+                      labels: batteryData.labels,
+                      type: "pie",
+                    },
+                  ]}
+                  layout={{ width: 500, height: 400, title: "Battery usage" }}
+                />
               </div>
             ) : (
               <div className="box3">
@@ -253,9 +396,14 @@ export default function Demo() {
                   y: data.snr,
                   type: "scatter",
                   mode: "lines",
+                  marker: { color: plotColor },
                 },
               ]}
-              layout={{ title: "SNR through time", xaxis: {title: 'Time(TS) '}, yaxis: {title: 'SNR(dB)'}, }}
+              layout={{
+                title: "SNR through time",
+                xaxis: { title: "Time(TS) " },
+                yaxis: { title: "SNR(dB)" },
+              }}
             />
             <Plot
               data={[
@@ -285,7 +433,10 @@ export default function Demo() {
               layout={{
                 title: "Reference Signal(RS) attributes",
                 grid: { rows: 3, columns: 1, pattern: "independent" },
-                xaxis3: {title: 'Time(TS) '}, yaxis: {title: 'RSSI(dBm)'}, yaxis2: {title: 'RSRP(dBm)'}, yaxis3: {title: 'RSRQ(dB)'}
+                xaxis3: { title: "Time(TS) " },
+                yaxis: { title: "RSSI(dBm)" },
+                yaxis2: { title: "RSRP(dBm)" },
+                yaxis3: { title: "RSRQ(dB)" },
               }}
             />
           </div>
@@ -294,4 +445,3 @@ export default function Demo() {
     </div>
   );
 }
-
