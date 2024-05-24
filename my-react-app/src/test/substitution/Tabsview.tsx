@@ -30,7 +30,6 @@ export default function Tabview() {
                 <Dato/>
               </TabPanel>
               <TabPanel>
-                <h1>New</h1>
                 <FrontTest/>
               </TabPanel>
             </Tabs>
