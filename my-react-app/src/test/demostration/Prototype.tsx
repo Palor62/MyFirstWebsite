@@ -119,7 +119,7 @@ export default function Demo() {
     const fetchDat = async () => {
       try {
         const response = await fetch(
-          "https://raw.githubusercontent.com/martinloevborg/martinloevborg.github.io/main/my-react-app/src/test/demostration/points.csv"
+          "https://raw.githubusercontent.com/martinloevborg/martinloevborg.github.io/main/my-react-app/src/test/demostration/data.csv"
         );
         const csvData = await response.text();
         console.log(csvData);
