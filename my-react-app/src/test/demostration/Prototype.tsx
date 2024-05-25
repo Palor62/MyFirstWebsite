@@ -36,6 +36,10 @@ export default function Demo() {
     const rssi = [];
     const rsrp = [];
     const rsrq = [];
+    const temp = [];
+    const spd = [];
+    const bat = [];
+    const msg = [];
 
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
@@ -50,46 +54,53 @@ export default function Demo() {
       rssi.push(row[8]);
       rsrp.push(row[9]);
       rsrq.push(row[10]);
+      temp.push(row[11]);
+      //spd.push(row[12]);
+      //bat.push(row[13]);
+      //msg.push(row[14]);
     }
 
-    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq });
+    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq, temp });//spd, bat, msg
   };
 
   const [batPct, setBatPct] = useState(0);
   const batteryData = {
-    values: [6, 34],
-    labels: ["Battery used", "Battery left"],
+    r: 34,
+    theta: ["Bat(V)"],
   };
   const tempData = {
     r: 39,
-    theta: ["Temp"],
+    theta: ["Temp(°C)"],
   };
+  const percentageLeft = (batteryData.r / 40) * 100;
   const handleAlerts = () => {
-    const secondBatValue = batteryData.values[1];
     const tempValue = tempData.r;
-    const percentageLeft = (secondBatValue / 40) * 100;
     setBatPct(percentageLeft);
     const below20Pct = percentageLeft < 20;
     const above60Temp = tempValue > 60;
     if (above60Temp && below20Pct) {
       alert(
-        `Battery is low at: ${percentageLeft}% need charging!\nDevice is overheated at ${tempValue} degrees Celsius need cooling`
+        `Battery is low at: ${percentageLeft.toFixed(
+          2
+        )}% need charging!\nDevice is overheated at ${tempValue} °C need cooling`
       );
     } else if (above60Temp) {
       alert(
         `Battery percentage: ${percentageLeft.toFixed(
           2
-        )}%\nDevice is overheated at ${tempValue} degrees Celsius need cooling`
+        )}%\nDevice is overheated at ${tempValue} °C need cooling`
       );
     } else if (below20Pct) {
       alert(
-        `Battery is low at: ${percentageLeft}% need charging!\nDevice temperature: ${tempValue} degrees Celsius`
+        `Battery is low at: ${percentageLeft.toFixed(
+          2
+        )}% need charging!\nDevice temperature: ${tempValue} °C`
       );
     } else {
       alert(
         `Battery percentage: ${percentageLeft.toFixed(
           2
-        )}%\nDevice temperature: ${tempValue} degrees Celsius`
+        )}%\nDevice temperature: ${tempValue} °C`
       );
     }
   };
@@ -127,13 +138,6 @@ export default function Demo() {
         <div className="box2">
           <div className="box3">
             <h1>AirPlates drone flight history</h1>
-          </div>
-          <div className="box3">
-            <Circle value={"false"} label="Airborne" />
-            <Circle value={"0"} label="Disconnectioned" />
-            <Circle value={"1"} label="Airtime(h)" />
-          </div>
-          <div className="box3">
             <div>
               <input
                 type="checkbox"
@@ -143,6 +147,13 @@ export default function Demo() {
               />
               <span style={{ fontSize: 16 }}>{bool ? "On" : "Off"}</span>
             </div>
+          </div>
+          <div className="box3">
+            <Circle value={"false"} label="Airborne"/>
+            <Circle value={"0"} label="Disconnectioned" />
+            <Circle value={"1"} label="Airtime(h)" />
+          </div>
+          <div className="box3">
             <button onClick={handleAlerts}>Check Battery</button>
             <fieldset>
               <div>
@@ -171,52 +182,86 @@ export default function Demo() {
               </div>
             </fieldset>
           </div>
+          <h2>Heights during flight</h2>
           <div className="box3">
-            {bool ? (
-              <div className="box3">
-                <Plot
-                  data={[
-                    {
-                      x: data.time,
-                      y: data.alt,
-                      type: "scatter",
-                      fill: "tozeroy",
-                      marker: { color: plotColor },
-                    },
-                  ]}
-                  layout={{
-                    title: "Altitude through time",
-                    xaxis: { title: "Time(TS) " },
-                    yaxis: { title: "Altitude(m)" },
-                  }}
-                />
-                <Plot
-                  data={[
-                    {
-                      x: data.time,
-                      y: data.agl,
-                      type: "scatter",
-                      mode: "lines",
-                      fill: "tozeroy",
-                      line: { shape: "spline" },
-                      marker: { color: plotColor },
-                    },
-                  ]}
-                  layout={{
-                    title: "AGLBaro through time",
-                    xaxis: { title: "Time(TS) " },
-                    yaxis: { title: "AGLBaro(m)" },
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="box3">
-                <Barholder />
-                <Barholder />
-              </div>
-            )}
+            <Plot
+              data={[
+                {
+                  x: data.time,
+                  y: data.alt,
+                  type: "scatter",
+                  fill: "tozeroy",
+                  marker: { color: plotColor },
+                },
+              ]}
+              layout={{
+                title: "Altitude during flight",
+                xaxis: { title: "Time(TS) " },
+                yaxis: { title: "Altitude(m)" },
+              }}
+            />
+            <Plot
+              data={[
+                {
+                  x: data.time,
+                  y: data.agl,
+                  type: "scatter",
+                  mode: "lines",
+                  fill: "tozeroy",
+                  line: { shape: "spline" },
+                  marker: { color: plotColor },
+                },
+              ]}
+              layout={{
+                title: "AGLBaro during flight",
+                xaxis: { title: "Time(TS) " },
+                yaxis: { title: "AGLBaro(m)" },
+              }}
+            />
           </div>
+          <h2>Dilution of precision during flight</h2>
           <div className="box3">
+            <Plot
+              data={[
+                {
+                  x: data.time,
+                  y: data.vdop,
+                  type: "scatter",
+                  line: { shape: "hv", color: plotColor },
+                  mode: "lines+markers",
+                  name: "VDOP",
+                },
+                {
+                  x: data.time,
+                  y: data.hdop,
+                  type: "scatter",
+                  line: { shape: "hv", dash: "dot", color: plotColor },
+                  mode: "lines+markers",
+                  name: "HDOP",
+                },
+              ]}
+              layout={{
+                title: "VDOP and HDOP during flight",
+                xaxis: { title: "Time(TS) " },
+                yaxis: { title: "VDOP/HDOP(unitless)" },
+              }}
+            />
+          </div>
+          <h2>Geographic coordinates during flight</h2>
+          <div className="box3">
+            <Plot
+              data={[
+                {
+                  x: data.lat,
+                  type: "histogram",
+                  marker: { color: plotColor },
+                },
+              ]}
+              layout={{
+                title: "Latitude during flight",
+                xaxis: { title: "Latitude(°)" },
+              }}
+            />
             <Plot
               data={[
                 {
@@ -228,36 +273,35 @@ export default function Demo() {
                     0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
                   ],
                   mode: "markers",
-                  marker: { color: "rgb(102,0,0)" },
+                  marker: { color: plotColor },
                 },
                 {
-                  type: "histogram2dcontour",
-                  x: [
-                    0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
-                  ],
-                  y: [
-                    0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
-                  ],
-                },
-                {
-                  type: "histogram",
+                  type: "violin",
+                  name: "Lat",
                   x: [
                     0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
                   ],
                   yaxis: "y2",
-                  marker: { color: "rgb(102,0,0)" },
+                  marker: { color: plotColor },
+                  box: {
+                    visible: true
+                  },
                 },
                 {
-                  type: "histogram",
+                  type: "violin",
+                  name: "Long",
                   y: [
                     0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
                   ],
                   xaxis: "x2",
-                  marker: { color: "rgb(102,0,0)" },
+                  marker: { color: plotColor },
+                  box: {
+                    visible: true
+                  },
                 },
               ]}
               layout={{
-                title: "Latitude and Longtitude",
+                title: "Latitude and Longtitude during flight",
                 margin: { t: 50 },
                 bargap: 0,
                 showlegend: false,
@@ -288,107 +332,129 @@ export default function Demo() {
             <Plot
               data={[
                 {
-                  x: data.time,
-                  y: data.vdop,
-                  type: "scatter",
-                  line: { shape: "hv" },
-                  mode: "lines+markers",
-                  name: "VDOP",
-                },
-                {
-                  x: data.time,
-                  y: data.hdop,
-                  type: "scatter",
-                  line: { shape: "hv" },
-                  mode: "lines+markers",
-                  name: "HDOP",
+                  x: data.long,
+                  type: "histogram",
+                  marker: { color: plotColor },
                 },
               ]}
               layout={{
-                title: "VDOP and HDOP through time",
-                xaxis: { title: "Time(TS) " },
-                yaxis: { title: "VDOP/HDOP" },
+                title: "Longtitude during flight",
+                xaxis: { title: "Longtitude(°)" },
+              }}
+            />
+          </div>
+          <h2>Statistics of parameters</h2>
+          <div className="box3">
+            <Plot
+              data={[
+                {
+                  r: [tempData.r, 71, batteryData.r, 62, percentageLeft, tempData.r],
+                  theta: [
+                    tempData.theta,
+                    "Spd(m/s)",
+                    batteryData.theta,
+                    "Msg(N)",
+                    "Bat(%)",
+                    tempData.theta,
+                  ],
+                  fill: "toself",
+                  type: "scatterpolar",
+                  marker: { color: plotColor },
+                },
+              ]}
+              layout={{
+                width: 500,
+                height: 400,
+                title: "Last recording parameters",
+                polar: {
+                  radialaxis: {
+                    visible: true,
+                    range: [0, 100],
+                  },
+                },
+              }}
+            />
+            <Plot
+              data={[
+                {
+                  r: [48, 83, 28, 52, 70, 48],
+                  theta: [
+                    "Temp(°C)",
+                    "Spd(m/s)",
+                    "Bat(V)",
+                    "Msg(N)",
+                    "Bat(%)",
+                    "Temp(°C)",
+                  ],
+                  fill: "toself",
+                  type: "scatterpolar",
+                  marker: { color: plotColor },
+                },
+              ]}
+              layout={{
+                width: 500,
+                height: 400,
+                title: "Avg. of parameters",
+                polar: {
+                  radialaxis: {
+                    visible: true,
+                    range: [0, 100],
+                  },
+                },
               }}
             />
           </div>
           <div className="box3">
-            {bool ? (
-              <div className="box3">
-                <Plot
-                  data={[
-                    {
-                      type: "indicator",
-                      value: 67,
-                      gauge: { axis: { range: [0, 100] } },
-                      domain: { row: 0, column: 0 },
-                    },
-                  ]}
-                  layout={{
-                    width: 500,
-                    height: 400,
-                    margin: { t: 25, b: 25, l: 25, r: 25 },
-                    grid: { rows: 2, columns: 2, pattern: "independent" },
-                    template: {
-                      data: {
-                        indicator: [
-                          {
-                            title: { text: "Average speed" },
-                            mode: "gauge+number",
-                          },
-                        ],
-                      },
-                    },
-                  }}
-                />
-                <Plot
-                  data={[
-                    {
-                      r: [tempData.r, 71, 34, 62, 85, tempData.r],
-                      theta: [
-                        tempData.theta,
-                        "Spd",
-                        "Bat(V)",
-                        "Msg",
-                        "Bat%",
-                        tempData.theta,
-                      ],
-                      fill: "toself",
-                      type: "scatterpolar",
-                      marker: { color: plotColor },
-                    },
-                  ]}
-                  layout={{
-                    width: 500,
-                    height: 400,
-                    title: "Last recording parameters",
-                    polar: {
-                      radialaxis: {
-                        visible: true,
-                        range: [0, 100],
-                      },
-                    },
-                  }}
-                />
-                <Plot
-                  data={[
-                    {
-                      values: batteryData.values,
-                      labels: batteryData.labels,
-                      type: "pie",
-                    },
-                  ]}
-                  layout={{ width: 500, height: 400, title: "Battery usage" }}
-                />
-              </div>
-            ) : (
-              <div className="box3">
-                <Barholder />
-                <Barholder />
-                <Barholder />
-              </div>
-            )}
-          </div>
-          <div className="box3">
+          <Plot
+              data={[
+                {
+                  x: data.time,
+                  y: data.snr,//temp
+                  type: "bar",
+                  name: "Temp",
+                  marker: { color: plotColor },
+                },
+                {
+                  x: data.time,
+                  y: data.snr,//spd
+                  type: "bar",
+                  xaxis: "x2",
+                  yaxis: "y2",
+                  name: "Spd",
+                  marker: { color: plotColor },
+                },
+                {
+                  x: data.time,
+                  y: data.snr,//bat
+                  type: "bar",
+                  xaxis: "x3",
+                  yaxis: "y3",
+                  name: "Bat",
+                  marker: { color: plotColor },
+                },
+                {
+                  x: data.time,
+                  y: data.snr,//msg
+                  type: "bar",
+                  xaxis: "x4",
+                  yaxis: "y4",
+                  name: "Msg",
+                  marker: { color: plotColor },
+                },
+              ]}
+              layout={{
+                title: "Parameters during flight",
+                grid: {rows: 2, columns: 2, pattern: 'independent'},
+                xaxis: {showticklabels: false},
+                xaxis2: {showticklabels: false},
+                xaxis3: { title: "Time(TS) " },
+                xaxis4: { title: "Time(TS) " },
+                yaxis: {title: 'Temp(°C)'}, 
+                yaxis2: {title: 'Spd(m/s)'}, 
+                yaxis3: {title: 'Bat(V)'}, 
+                yaxis4: {title: 'Msg(N)'}
+              }}
+            />
             <Plot
               data={[
                 {
@@ -400,7 +466,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "SNR through time",
+                title: "SNR during flight",
                 xaxis: { title: "Time(TS) " },
                 yaxis: { title: "SNR(dB)" },
               }}
@@ -412,6 +478,7 @@ export default function Demo() {
                   y: data.rssi,
                   type: "scatter",
                   name: "RSSI",
+                  marker: { color: plotColor },
                 },
                 {
                   x: data.time,
@@ -420,6 +487,7 @@ export default function Demo() {
                   yaxis: "y2",
                   type: "scatter",
                   name: "RSRP",
+                  marker: { color: plotColor },
                 },
                 {
                   x: data.time,
@@ -428,6 +496,7 @@ export default function Demo() {
                   yaxis: "y3",
                   type: "scatter",
                   name: "RSRQ",
+                  marker: { color: plotColor },
                 },
               ]}
               layout={{
