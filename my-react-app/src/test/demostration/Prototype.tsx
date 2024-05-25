@@ -65,7 +65,7 @@ export default function Demo() {
 
   const [batPct, setBatPct] = useState(0);
   const batteryData = {
-    r: 34,
+    r: 33,
     theta: ["Bat(V)"],
   };
   const tempData = {
@@ -348,7 +348,7 @@ export default function Demo() {
             <Plot
               data={[
                 {
-                  r: [tempData.r, 71, batteryData.r, 62, percentageLeft, tempData.r],
+                  r: [tempData.r, 71, batteryData.r, 84, percentageLeft, tempData.r],
                   theta: [
                     tempData.theta,
                     "Spd(m/s)",
@@ -377,7 +377,7 @@ export default function Demo() {
             <Plot
               data={[
                 {
-                  r: [48, 83, 28, 52, 70, 48],
+                  r: [48, 61, 36, 49, 85, 48],
                   theta: [
                     "Temp(°C)",
                     "Spd(m/s)",
@@ -409,7 +409,7 @@ export default function Demo() {
               data={[
                 {
                   x: data.time,
-                  y: data.snr,//temp
+                  y: data.temp,
                   type: "bar",
                   name: "Temp",
                   marker: { color: plotColor },
