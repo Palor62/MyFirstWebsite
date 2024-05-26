@@ -55,12 +55,12 @@ export default function Demo() {
       rsrp.push(row[9]);
       rsrq.push(row[10]);
       temp.push(row[11]);
-      //spd.push(row[12]);
-      //bat.push(row[13]);
-      //msg.push(row[14]);
+      spd.push(row[12]);
+      bat.push(row[13]);
+      msg.push(row[14]);
     }
 
-    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq, temp });//spd, bat, msg
+    setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq, temp, spd, bat, msg });
   };
 
   const [batPct, setBatPct] = useState(0);
@@ -119,7 +119,7 @@ export default function Demo() {
     const fetchDat = async () => {
       try {
         const response = await fetch(
-          "https://raw.githubusercontent.com/martinloevborg/martinloevborg.github.io/main/my-react-app/src/test/demostration/data.csv"
+          "https://raw.githubusercontent.com/martinloevborg/martinloevborg.github.io/main/my-react-app/src/test/demostration/newdata.csv"
         );
         const csvData = await response.text();
         console.log(csvData);
@@ -195,7 +195,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "Altitude during flight",
+                title: "Altitude through time",
                 xaxis: { title: "Time(TS) " },
                 yaxis: { title: "Altitude(m)" },
               }}
@@ -213,13 +213,13 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "AGLBaro during flight",
+                title: "AGL(Above Ground Level) through time",
                 xaxis: { title: "Time(TS) " },
-                yaxis: { title: "AGLBaro(m)" },
+                yaxis: { title: "AGL(m)" },
               }}
             />
           </div>
-          <h2>Dilution of precision during flight</h2>
+          <h2>DOP(Dilution Of Precision) during flight</h2>
           <div className="box3">
             <Plot
               data={[
@@ -241,7 +241,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "VDOP and HDOP during flight",
+                title: "Vertical DOP and Horizontal DOP through time",
                 xaxis: { title: "Time(TS) " },
                 yaxis: { title: "VDOP/HDOP(unitless)" },
               }}
@@ -258,7 +258,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "Latitude during flight",
+                title: "Latitude through time",
                 xaxis: { title: "Latitude(°)" },
               }}
             />
@@ -266,21 +266,15 @@ export default function Demo() {
               data={[
                 {
                   type: "scatter",
-                  x: [
-                    0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
-                  ],
-                  y: [
-                    0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
-                  ],
+                  x: data.lat,
+                  y: data.long,
                   mode: "markers",
                   marker: { color: plotColor },
                 },
                 {
                   type: "violin",
                   name: "Lat",
-                  x: [
-                    0, 0, 0, 0, 50, 55.7, 55.7, 54.2, 0, 38.9, 0, 0, 0, 0, 0, 0,
-                  ],
+                  x: data.lat,
                   yaxis: "y2",
                   marker: { color: plotColor },
                   box: {
@@ -290,9 +284,7 @@ export default function Demo() {
                 {
                   type: "violin",
                   name: "Long",
-                  y: [
-                    0, 0, 0, 0, 12.5, 12.5, 12.5, 0, 0, 12.5, 0, 0, 0, 0, 0, 0,
-                  ],
+                  y: data.long,
                   xaxis: "x2",
                   marker: { color: plotColor },
                   box: {
@@ -338,7 +330,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "Longtitude during flight",
+                title: "Longtitude through time",
                 xaxis: { title: "Longtitude(°)" },
               }}
             />
@@ -394,7 +386,7 @@ export default function Demo() {
               layout={{
                 width: 500,
                 height: 400,
-                title: "Avg. of parameters",
+                title: "Parameters average",
                 polar: {
                   radialaxis: {
                     visible: true,
@@ -404,6 +396,7 @@ export default function Demo() {
               }}
             />
           </div>
+          <h2>Parameters, SNR and RS during flight</h2>
           <div className="box3">
           <Plot
               data={[
@@ -416,7 +409,7 @@ export default function Demo() {
                 },
                 {
                   x: data.time,
-                  y: data.snr,//spd
+                  y: data.spd,
                   type: "bar",
                   xaxis: "x2",
                   yaxis: "y2",
@@ -425,7 +418,7 @@ export default function Demo() {
                 },
                 {
                   x: data.time,
-                  y: data.snr,//bat
+                  y: data.bat,
                   type: "bar",
                   xaxis: "x3",
                   yaxis: "y3",
@@ -434,7 +427,7 @@ export default function Demo() {
                 },
                 {
                   x: data.time,
-                  y: data.snr,//msg
+                  y: data.msg,
                   type: "bar",
                   xaxis: "x4",
                   yaxis: "y4",
@@ -443,7 +436,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "Parameters during flight",
+                title: "Parameters through time",
                 grid: {rows: 2, columns: 2, pattern: 'independent'},
                 xaxis: {showticklabels: false},
                 xaxis2: {showticklabels: false},
@@ -466,7 +459,7 @@ export default function Demo() {
                 },
               ]}
               layout={{
-                title: "SNR during flight",
+                title: "SNR(Signal-to-Noise Ratio) through time",
                 xaxis: { title: "Time(TS) " },
                 yaxis: { title: "SNR(dB)" },
               }}
@@ -477,7 +470,7 @@ export default function Demo() {
                   x: data.time,
                   y: data.rssi,
                   type: "scatter",
-                  name: "RSSI",
+                  name: "RSSI(strength indicator)",
                   marker: { color: plotColor },
                 },
                 {
@@ -486,7 +479,7 @@ export default function Demo() {
                   xaxis: "x2",
                   yaxis: "y2",
                   type: "scatter",
-                  name: "RSRP",
+                  name: "RSRP(received power)",
                   marker: { color: plotColor },
                 },
                 {
@@ -495,14 +488,16 @@ export default function Demo() {
                   xaxis: "x3",
                   yaxis: "y3",
                   type: "scatter",
-                  name: "RSRQ",
+                  name: "RSRQ(received quality)",
                   marker: { color: plotColor },
                 },
               ]}
               layout={{
-                title: "Reference Signal(RS) attributes",
+                title: "RS(Reference Signal) attributes",
                 grid: { rows: 3, columns: 1, pattern: "independent" },
                 xaxis3: { title: "Time(TS) " },
+                xaxis: {showticklabels: false},
+                xaxis2: {showticklabels: false},
                 yaxis: { title: "RSSI(dBm)" },
                 yaxis2: { title: "RSRP(dBm)" },
                 yaxis3: { title: "RSRQ(dB)" },
