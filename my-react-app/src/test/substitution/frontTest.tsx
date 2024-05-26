@@ -1,7 +1,9 @@
+//Imports
 import React, { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import "../demostration/style.css";
 
+//Circle card interface and component
 interface CircleProps {
   value: string;
   label: string;
@@ -19,11 +21,14 @@ const Circle: React.FC<CircleProps> = ({ value, label }) => {
 };
 
 const App: React.FC = () => {
+  //States for controls and traces
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState("12h"); // State to manage the selected time range
-  const [measurements, setMeasurements] = useState<string[]>([]); // State to manage selected measurements
-  const [startTime, setStartTime] = useState<string>(""); // State to manage the start time
-  const [stopTime, setStopTime] = useState<string>(""); // State to manage the stop time
+  const [bool, setIsChecked] = useState(true);
+
+  const [timeRange, setTimeRange] = useState("12h"); 
+  const [measurements, setMeasurements] = useState<string[]>([]); 
+  const [startTime, setStartTime] = useState<string>(""); 
+  const [stopTime, setStopTime] = useState<string>(""); 
 
   const [altTrace, setAltTrace] = useState<any[]>([]);
   const [aglTrace, setAglTrace] = useState<any[]>([]);
@@ -32,7 +37,9 @@ const App: React.FC = () => {
   const [hdopTrace, setHdopTrace] = useState<any[]>([]);
 
   const [latTrace, setLatTrace] = useState<any[]>([]);
+  const [latViolinTrace, setLatViolinTrace] = useState<any[]>([]);
   const [latLongTrace, setLatLongTrace] = useState<any[]>([]);
+  const [longViolinTrace, setLongViolinTrace] = useState<any[]>([]);
   const [longTrace, setLongTrace] = useState<any[]>([]);
 
   const [lastTrace, setLastTrace] = useState<any[]>([]);
@@ -53,34 +60,32 @@ const App: React.FC = () => {
   const [airborne, setAirborne] = useState("false");
   const [disconnected, setDisconnected] = useState("false");
 
-  // List of available measurements to choose from
+  //List of ID
   const availableMeasurements = [
     "352709570738112",
     "352709570805663",
     "4DF5E020C901F8BC9",
   ];
 
-  // Define a mapping of measurements to colors
+  //Mapping ID's to colors
   const measurementColors = {
     "352709570738112": "red",
     "352709570805663": "blue",
     "4DF5E020C901F8BC9": "green",
-    // Add more colors for additional measurements
   };
 
-  const [bool, setIsChecked] = useState(true);
+  //Function for changing the boolean value
   const handleToggle = () => {
     setIsChecked(!bool);
   };
 
   useEffect(() => {
+    //Function for calculating selected time range
     const calculateTimeRange = () => {
-      const now = new Date(); // Current time
+      const now = new Date();
 
-      // Calculate the stop time
       const stopTime = now.toISOString();
 
-      // Calculate the start time based on the selected time range
       let startTime = new Date();
       if (timeRange === "1h") {
         startTime.setHours(now.getHours() - 1);
@@ -97,6 +102,7 @@ const App: React.FC = () => {
     };
     calculateTimeRange();
 
+    //Function for changing Airtime card corresponding to selected time range
     const updateAirtimeValue = (range: string) => {
       switch (range) {
         case "1h":
@@ -113,6 +119,7 @@ const App: React.FC = () => {
     };
     setAirtime(updateAirtimeValue(timeRange));
 
+    //If-statement for changing Airborne and Disconnected card depended on selected time range
     if (timeRange === "1h") {
       setAirborne("true");
       setDisconnected("0");
@@ -121,14 +128,13 @@ const App: React.FC = () => {
       setDisconnected("3");
     }
 
+    //Function for fetching data from backend endpoints and defining traces while updating the traces state
     const fetchData = async () => {
       try {
-        // Create a query string with the selected measurements
         const measurementQuery = measurements
           .map((m) => `measurement=${m}`)
           .join("&");
 
-        // Fetch data from the backend server
         const altResponse = await fetch(
           `http://localhost:80/alt?${measurementQuery}&timeRange=${timeRange}&startTime=${startTime}&stopTime=${stopTime}`
         );
@@ -249,7 +255,6 @@ const App: React.FC = () => {
         const batvMeanData = await batvMeanResponse.json();
         const msgMeanData = await msgMeanResponse.json();
 
-        // Create an array of traces for Plotly, one for each measurement
         const traceForAlt = measurements.map((measurement) => {
           const measurementData = altData[measurement] || [];
           return {
@@ -258,7 +263,7 @@ const App: React.FC = () => {
             name: `ID ${measurement}`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
-            line: { color: measurementColors[measurement] || "black" }, // Use the defined color or fallback to black
+            line: { color: measurementColors[measurement] || "black" }, 
           };
         });
 
@@ -274,7 +279,7 @@ const App: React.FC = () => {
             line: {
               color: measurementColors[measurement] || "black",
               shape: "spline",
-            }, // Use the defined color or fallback to black
+            }, 
           };
         });
 
@@ -289,7 +294,7 @@ const App: React.FC = () => {
             line: {
               color: measurementColors[measurement] || "black",
               shape: "hv",
-            }, // Use the defined color or fallback to black
+            }, 
           };
         });
 
@@ -305,7 +310,7 @@ const App: React.FC = () => {
               color: measurementColors[measurement] || "black",
               shape: "hv",
               dash: "dot",
-            }, // Use the defined color or fallback to black
+            }, 
           };
         });
 
@@ -314,6 +319,20 @@ const App: React.FC = () => {
           return {
             type: "histogram",
             name: `ID ${measurement}`,
+            x: measurementData.map((item: any) => item._value),
+            marker: { color: measurementColors[measurement] || "black" },
+          };
+        });
+
+        const traceForLatViolin = measurements.map((measurement) => {
+          const measurementData = latData[measurement] || [];
+          return {
+            type: "violin",
+            yaxis: "y2",
+            name: "Lat",
+            box: {
+              visible: true
+            },
             x: measurementData.map((item: any) => item._value),
             marker: { color: measurementColors[measurement] || "black" },
           };
@@ -333,15 +352,28 @@ const App: React.FC = () => {
                 long: longItem ? longItem._value : null,
               };
             })
-            .filter((item: any) => item.long !== null); // Filter out data points where speed is not available
+            .filter((item: any) => item.long !== null); 
 
           return {
-            //type: 'histogram2dcontour',
             type: "scatter",
             mode: "markers",
             name: `ID ${measurement}`,
             x: alignedData.map((item: any) => item.lat),
             y: alignedData.map((item: any) => item.long),
+            marker: { color: measurementColors[measurement] || "black" },
+          };
+        });
+
+        const traceForLongViolin = measurements.map((measurement) => {
+          const measurementData = longData[measurement] || [];
+          return {
+            type: "violin",
+            name: "Long",
+            xaxis: "x2",
+            box: {
+              visible: true
+            },
+            y: measurementData.map((item: any) => item._value),
             marker: { color: measurementColors[measurement] || "black" },
           };
         });
@@ -365,10 +397,10 @@ const App: React.FC = () => {
           const data2 = measurementData2.map((item: any) => item._value);
           const data3 = measurementData3.map((item: any) => item._value);
           const data4 = measurementData4.map((item: any) => item._value);
-          const data5 = measurementData3.map((item: any) => item._value * 10);
+          const data5 = measurementData3.map((item: any) => item._value / 0.4);
           return {
             r: [...data, ...data2, ...data3, ...data4, ...data5, ...data],
-            theta: ["temp", "Spd", "Bat(V)", "Msg", "Bat%", "temp"],
+            theta: ["Temp(°C)", "Spd(m/s)", "Bat(V)", "Msg(N)", "Bat%", "Temp(°C)"],
             fill: "toself",
             type: "scatterpolar",
             name: `ID ${measurement}`,
@@ -385,10 +417,10 @@ const App: React.FC = () => {
           const data2 = measurementData2.map((item: any) => item._value);
           const data3 = measurementData3.map((item: any) => item._value);
           const data4 = measurementData4.map((item: any) => item._value);
-          const data5 = measurementData3.map((item: any) => item._value * 10);
+          const data5 = measurementData3.map((item: any) => item._value / 0.4);
           return {
             r: [...data, ...data2, ...data3, ...data4, ...data5, ...data],
-            theta: ["temp", "Spd", "Bat(V)", "Msg", "Bat%", "temp"],
+            theta: ["Temp(°C)", "Spd(m/s)", "Bat(V)", "Msg(N)", "Bat%", "Temp(°C)"],
             fill: "toself",
             type: "scatterpolar",
             name: `ID ${measurement}`,
@@ -400,7 +432,7 @@ const App: React.FC = () => {
           const measurementData = tempData[measurement] || [];
           return {
             type: "bar",
-            name: `ID ${measurement}`,
+            name: `ID ${measurement} Temp(°C)`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
             marker: { color: measurementColors[measurement] || "black" },
@@ -411,7 +443,7 @@ const App: React.FC = () => {
           const measurementData = spdData[measurement] || [];
           return {
             type: "bar",
-            name: `ID ${measurement}`,
+            name: `ID ${measurement} Spd(m/s)`,
             xaxis: "x2",
             yaxis: "y2",
             x: measurementData.map((item: any) => item._time),
@@ -424,7 +456,7 @@ const App: React.FC = () => {
           const measurementData = batvData[measurement] || [];
           return {
             type: "bar",
-            name: `ID ${measurement}`,
+            name: `ID ${measurement} Bat(V)`,
             xaxis: "x3",
             yaxis: "y3",
             x: measurementData.map((item: any) => item._time),
@@ -437,7 +469,7 @@ const App: React.FC = () => {
           const measurementData = msgData[measurement] || [];
           return {
             type: "bar",
-            name: `ID ${measurement}`,
+            name: `ID ${measurement} Msg(N)`,
             xaxis: "x4",
             yaxis: "y4",
             x: measurementData.map((item: any) => item._time),
@@ -454,7 +486,7 @@ const App: React.FC = () => {
             name: `ID ${measurement}`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
-            line: { color: measurementColors[measurement] || "black" }, // Use the defined color or fallback to black
+            line: { color: measurementColors[measurement] || "black" }, 
           };
         });
 
@@ -462,10 +494,10 @@ const App: React.FC = () => {
           const measurementData = rssiData[measurement] || [];
           return {
             type: "scatter",
-            name: `ID ${measurement} RSSI`,
+            name: `ID ${measurement} RSSI(strength indicator)`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
-            line: { color: measurementColors[measurement] || "black" }, // Use the defined color or fallback to black
+            line: { color: measurementColors[measurement] || "black" }, 
           };
         });
 
@@ -475,10 +507,10 @@ const App: React.FC = () => {
             type: "scatter",
             xaxis: "x2",
             yaxis: "y2",
-            name: `ID ${measurement} RSRP`,
+            name: `ID ${measurement} RSRP(received power)`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
-            line: { color: measurementColors[measurement] || "black" }, // Use the defined color or fallback to black
+            line: { color: measurementColors[measurement] || "black" }, 
           };
         });
 
@@ -488,62 +520,28 @@ const App: React.FC = () => {
             type: "scatter",
             xaxis: "x3",
             yaxis: "y3",
-            name: `ID ${measurement} RSRQ`,
+            name: `ID ${measurement} RSRQ(received quality)`,
             x: measurementData.map((item: any) => item._time),
             y: measurementData.map((item: any) => item._value),
-            line: { color: measurementColors[measurement] || "black" }, // Use the defined color or fallback to black
+            line: { color: measurementColors[measurement] || "black" }, 
           };
         });
 
         const traceForTest = measurements.map((measurement) => {
-          const measurementData = tempData[measurement] || [];
-          const measurementData2 = spdData[measurement] || [];
-          const measurementData3 = batvData[measurement] || [];
-          const measurementData4 = msgData[measurement] || [];
-          const measurementData5 = aglData[measurement] || [];
-          const measurementData6 = batvLastData[measurement] || [];
-          const data = measurementData6.map((item: any) => item._value * 2);
-          //const data =
+          const measurementData = latData[measurement] || [];
+          const measurementData2 = longData[measurement] || [];
+          const data = measurementData.map((item: any) => item._value);
+          const data2 = measurementData2.map((item: any) => item._value);
           return {
-            /*
-              type: "scatter",
-              name: `Measurement ${measurement}`,
-              x: measurementData.map((item: any) => item._value),
-              y: measurementData2.map((item: any) => item._value),
-              line: { color: measurementColors[measurement] || 'black' }
-            };*/ /*
-            r: [...measurementData.map((item: any) => item._value), ...measurementData2.map((item: any) => item._value), ...measurementData3.map((item: any) => item._value), ...measurementData4.map((item: any) => item._value)],
-            theta: [
-                              "temp",
-                              "Spd",
-                              "Bat(V)",
-                              "Msg",
-                              "Bat%",
-                              "temp",
-                            ],
-            fill: measurementColors[measurement] || 'black' ,
-            type: "scatterpolar",*/ /*
-            type: "bar",
-              name: `Measurement ${measurement}`,
-              x: measurementData5.map((item: any) => item._time),
-              y: measurementData5.map((item: any) => item._value),
-              marker: { color: measurementColors[measurement] || 'black' }*/ /*
-              type: "histogram",
-              name: `Measurement ${measurement}`,
-              x: measurementData5.map((item: any) => item._value),
-              marker: { color: measurementColors[measurement] || 'black' }*/ /*
-              values: [...measurementData6.map((item: any) => item._value), ...data],
-              type: "pie",
-              marker: { colors: measurementColors[measurement] || 'black' }*/
-            type: "violin",
-            //name: `Measurement ${measurement}`,
-            xaxis: "x2",
-            y: measurementData5.map((item: any) => item._value),
-            line: { color: measurementColors[measurement] || "black" },
+            type: "scatter",
+            mode: "markers",
+            name: `ID ${measurement}`,
+            x: measurementData.map((item: any) => item.lat),
+            y: measurementData2.map((item: any) => item.long),
+            marker: { color: measurementColors[measurement] || "black" },
           };
         });
 
-        // Update the state with the traces data
         setAltTrace(traceForAlt);
         setAglTrace(traceForAgl);
 
@@ -551,7 +549,9 @@ const App: React.FC = () => {
         setHdopTrace(traceForHdop);
 
         setLatTrace(traceForLat);
+        setLatViolinTrace(traceForLatViolin);
         setLatLongTrace(traceForLatLong);
+        setLongViolinTrace(traceForLongViolin);
         setLongTrace(traceForLong);
 
         setLastTrace(traceForLast);
@@ -574,7 +574,6 @@ const App: React.FC = () => {
       }
     };
 
-    // Fetch data when the selected measurements or time range change
     fetchData();
   }, [measurements, timeRange, startTime, stopTime]);
 
@@ -583,7 +582,8 @@ const App: React.FC = () => {
       <div className="box">
         <div className="box2">
           <div className="box3">
-            <h1>AirPlates drone flight history</h1>
+            <h1>AirPlates drone flight history dashboard</h1>
+            {/* Toggle checkbox */}
             <div>
               <input
                 type="checkbox"
@@ -595,12 +595,13 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="box3">
+            {/* Circle cards */}
             <Circle value={airborne} label="Airborne" />
             <Circle value={disconnected} label="Disconnectioned" />
             <Circle value={airtime} label="Airtime(h)" />
           </div>
           <div className="box3">
-            {/* Checkboxes to select up to three measurements */}
+            {/* Checkboxes for selecting the 3 ID's */}
             {availableMeasurements.map((measurement) => (
               <label key={measurement}>
                 <input
@@ -610,10 +611,8 @@ const App: React.FC = () => {
                   onChange={(e) => {
                     const checked = e.target.checked;
                     if (checked) {
-                      // Add the measurement to the list if it's selected
                       setMeasurements((prev) => [...prev, measurement]);
                     } else {
-                      // Remove the measurement from the list if it's deselected
                       setMeasurements((prev) =>
                         prev.filter((m) => m !== measurement)
                       );
@@ -624,12 +623,11 @@ const App: React.FC = () => {
               </label>
             ))}
 
-            {/* Dropdown to select the time range */}
+            {/* Dropdown for selecting the time range */}
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
             >
-              {/* Render options for the time range */}
               {["1h", "6h", "12h", "24h"].map((range) => (
                 <option key={range} value={range}>
                   {range}
@@ -639,12 +637,12 @@ const App: React.FC = () => {
           </div>
 
           <div className="box3">
-            {/* Display an error message if fetching data fails */}
+            {/* If data fails to be fetch from the backend server an error message will be displayed */}
             {error && <div>Error fetching data: {error}</div>}
           </div>
           <h2>Heights during flight</h2>
+          {/* Renders the plots if data is accessible */}
           <div className="box3">
-            {/* Render the Plotly chart if trace data is available */}
             {altTrace.length > 0 && (
               <Plot
                 data={altTrace}
@@ -691,13 +689,36 @@ const App: React.FC = () => {
                 }}
               />
             )}
-            {latLongTrace.length > 0 && (
+            {latLongTrace.length > 0 && latViolinTrace.length > 0 && longViolinTrace.length > 0 &&(
               <Plot
-                data={latLongTrace}
+                data={[...latLongTrace, ...latViolinTrace, ...longViolinTrace]}
                 layout={{
-                  title: "Latitude and Longtitude",
-                  xaxis: { title: "Latitude(°) " },
-                  yaxis: { title: "Longtitude(°)" },
+                  title: "Latitude and Longtitude during flight",
+                  margin: { t: 50 },
+                  bargap: 0,
+                  showlegend: false,
+                  xaxis: {
+                    domain: [0, 0.85],
+                    showgrid: false,
+                    zeroline: false,
+                    title: "Latitude(°)",
+                  },
+                  yaxis: {
+                    domain: [0, 0.85],
+                    showgrid: false,
+                    zeroline: false,
+                    title: "Longtitude(°)",
+                  },
+                  xaxis2: {
+                    domain: [0.85, 1],
+                    showgrid: false,
+                    zeroline: false,
+                  },
+                  yaxis2: {
+                    domain: [0.85, 1],
+                    showgrid: false,
+                    zeroline: false,
+                  },
                 }}
               />
             )}
@@ -705,7 +726,7 @@ const App: React.FC = () => {
               <Plot
                 data={longTrace}
                 layout={{
-                  title: "Latitude and Longtitude during flight",
+                  title: "Longtitude through time",
                   xaxis: { title: "Time(TS) " },
                   yaxis: { title: "Longtitude(°)" },
                 }}
@@ -735,6 +756,8 @@ const App: React.FC = () => {
                   layout={{
                     title: "Parameters through time",
                     grid: { rows: 2, columns: 2, pattern: "independent" },
+                    xaxis: { showticklabels: false },
+                    xaxis2: { showticklabels: false },
                     xaxis3: { title: "Time(TS) " },
                     xaxis4: { title: "Time(TS) " },
                     yaxis: { title: "Temp(°C)" },

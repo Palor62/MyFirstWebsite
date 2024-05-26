@@ -1,9 +1,9 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
 import "./style.css";
-import Barholder from "../components/Barholder.tsx";
 
-//Circle
+//Circle card interface and component
 interface CircleProps {
   value: string;
   label: string;
@@ -21,8 +21,26 @@ const Circle: React.FC<CircleProps> = ({ value, label }) => {
 };
 
 export default function Demo() {
-  //Csv
+  //States
   const [data, setData] = useState<any[]>([]);
+  const [batPct, setBatPct] = useState(0);
+  const [plotColor, setPlotColor] = useState<string>("blue");
+  const [bool, setIsChecked] = useState(true);
+
+  //Objects
+  const batteryData = {
+    r: 33,
+    theta: ["Bat(V)"],
+  };
+  const tempData = {
+    r: 39,
+    theta: ["Temp(°C)"],
+  };
+
+  //Variable
+  const percentageLeft = (batteryData.r / 40) * 100;
+
+  //Function for data processing with arrays for each row and a loop for pushing the data in the arrays
   const processDat = (csvData: string) => {
     const allRows = csvData.split("\n").map((row) => row.split(","));
     const time = [];
@@ -63,16 +81,7 @@ export default function Demo() {
     setData({ time, alt, agl, vdop, hdop, snr, lat, long, rssi, rsrp, rsrq, temp, spd, bat, msg });
   };
 
-  const [batPct, setBatPct] = useState(0);
-  const batteryData = {
-    r: 33,
-    theta: ["Bat(V)"],
-  };
-  const tempData = {
-    r: 39,
-    theta: ["Temp(°C)"],
-  };
-  const percentageLeft = (batteryData.r / 40) * 100;
+  //Function for alert handling with if and else if statements on which messages should be displayed 
   const handleAlerts = () => {
     const tempValue = tempData.r;
     setBatPct(percentageLeft);
@@ -105,17 +114,18 @@ export default function Demo() {
     }
   };
 
-  const [plotColor, setPlotColor] = useState<string>("blue");
+  //Function for changing the plots color
   const handleColorChange = (color: string) => {
     setPlotColor(color);
   };
 
-  const [bool, setIsChecked] = useState(true);
+  //Function for changing the boolean value
   const handleToggle = () => {
     setIsChecked(!bool);
   };
 
   useEffect(() => {
+    //Function for fetching data from the csv file
     const fetchDat = async () => {
       try {
         const response = await fetch(
@@ -137,7 +147,8 @@ export default function Demo() {
       <div className="box">
         <div className="box2">
           <div className="box3">
-            <h1>AirPlates drone flight history</h1>
+            <h1>AirPlates drone flight history dashboard</h1>
+            {/* Toggle checkbox */}
             <div>
               <input
                 type="checkbox"
@@ -148,13 +159,19 @@ export default function Demo() {
               <span style={{ fontSize: 16 }}>{bool ? "On" : "Off"}</span>
             </div>
           </div>
+          <h3>An error occurred while fetching data from the database</h3>
+          <h3>Either due to request timed-out or failed to fetch data</h3>
+          <h3>Data from ID 4DF5E020C901F8D2C on 2024-04-26 between 14:00:00 and 15:00:00, will be displayed instead</h3>
           <div className="box3">
-            <Circle value={"false"} label="Airborne"/>
+            {/* Circle cards */}
+            <Circle value={"false"} label="Airborne" />
             <Circle value={"0"} label="Disconnectioned" />
             <Circle value={"1"} label="Airtime(h)" />
           </div>
           <div className="box3">
-            <button onClick={handleAlerts}>Check Battery</button>
+            {/* Buttons for displaying alert messages*/}
+            <button onClick={handleAlerts}>Check Battery and Temperature</button>
+            {/* Radio buttons for selecting plot color */}
             <fieldset>
               <div>
                 <input
@@ -183,6 +200,7 @@ export default function Demo() {
             </fieldset>
           </div>
           <h2>Heights during flight</h2>
+          {/* Renders the plots by defining traces data and layout */}
           <div className="box3">
             <Plot
               data={[
@@ -398,13 +416,13 @@ export default function Demo() {
           </div>
           <h2>Parameters, SNR and RS during flight</h2>
           <div className="box3">
-          <Plot
+            <Plot
               data={[
                 {
                   x: data.time,
                   y: data.temp,
                   type: "bar",
-                  name: "Temp",
+                  name: "Temp(°C)",
                   marker: { color: plotColor },
                 },
                 {
@@ -413,7 +431,7 @@ export default function Demo() {
                   type: "bar",
                   xaxis: "x2",
                   yaxis: "y2",
-                  name: "Spd",
+                  name: "Spd(m/s)",
                   marker: { color: plotColor },
                 },
                 {
@@ -422,7 +440,7 @@ export default function Demo() {
                   type: "bar",
                   xaxis: "x3",
                   yaxis: "y3",
-                  name: "Bat",
+                  name: "Bat(V)",
                   marker: { color: plotColor },
                 },
                 {
@@ -431,21 +449,21 @@ export default function Demo() {
                   type: "bar",
                   xaxis: "x4",
                   yaxis: "y4",
-                  name: "Msg",
+                  name: "Msg(N)",
                   marker: { color: plotColor },
                 },
               ]}
               layout={{
                 title: "Parameters through time",
-                grid: {rows: 2, columns: 2, pattern: 'independent'},
-                xaxis: {showticklabels: false},
-                xaxis2: {showticklabels: false},
+                grid: { rows: 2, columns: 2, pattern: 'independent' },
+                xaxis: { showticklabels: false },
+                xaxis2: { showticklabels: false },
                 xaxis3: { title: "Time(TS) " },
                 xaxis4: { title: "Time(TS) " },
-                yaxis: {title: 'Temp(°C)'}, 
-                yaxis2: {title: 'Spd(m/s)'}, 
-                yaxis3: {title: 'Bat(V)'}, 
-                yaxis4: {title: 'Msg(N)'}
+                yaxis: { title: 'Temp(°C)' },
+                yaxis2: { title: 'Spd(m/s)' },
+                yaxis3: { title: 'Bat(V)' },
+                yaxis4: { title: 'Msg(N)' }
               }}
             />
             <Plot
@@ -496,8 +514,8 @@ export default function Demo() {
                 title: "RS(Reference Signal) attributes",
                 grid: { rows: 3, columns: 1, pattern: "independent" },
                 xaxis3: { title: "Time(TS) " },
-                xaxis: {showticklabels: false},
-                xaxis2: {showticklabels: false},
+                xaxis: { showticklabels: false },
+                xaxis2: { showticklabels: false },
                 yaxis: { title: "RSSI(dBm)" },
                 yaxis2: { title: "RSRP(dBm)" },
                 yaxis3: { title: "RSRQ(dB)" },
