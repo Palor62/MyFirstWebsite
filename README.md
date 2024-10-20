@@ -1,2 +1,2 @@
-# Personal website: [martinloevborg.com](https://martinloevborg.github.io/)
+# Personal website: [https://martinloevborg.github.io/](https://martinloevborg.github.io/)
 
